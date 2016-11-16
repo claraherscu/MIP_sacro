@@ -7,8 +7,8 @@
 #include "graph.cpp"
 
 #if !defined(MX_API_VER) || MX_API_VER < 0x07030000
-typedef int mwSize;
-typedef int mwIndex;
+//typedef int mwSize;
+//typedef int mwIndex;
 #endif
 
 #if BK_COSTTYPE == 0
