@@ -6,26 +6,13 @@ dataWithCanny = data;
 % problem in hips segmentation. (containes their accessNums)
 problematicHipsSegment = {};
 % these first two are not even pelvis area
-problematicHipsSegment{end+1} = '4015005386642';
-problematicHipsSegment{end+1} = '4015005763550';
-
+problematicHipsSegment{end+1} = 4015005386642;
+problematicHipsSegment{end+1} = 4015005763550;
 
 for i = 1:numel(problematicHipsSegment)
-    fPath = [basefolder, problematicHipsSegment{i}];
-    disp(fPath);
-    hipsFile = [fPath '/segmentationWithCanny.mat'];
-    if exist(fPath,'file') 
-        display(fPath);
-        filename = [basefolder, problematicHipsSegment{i}.accessNum];               
-        tic; [ hipsSeg ] = segmentHipsAndSave(filename,'withCanny'); toc;
-%         hipsFile = [fPath '/segmentationWithCanny'];
-%         save(hipsFile, 'hipsSeg');
-    end
-end
+    fpath = [basefolder, problematicHipsSegment{i}
 
-    
 
-% original test code, saving for later
 % for i = 1:numel(dataWithCanny)
 %     fPath = [basefolder, dataWithCanny{i}.accessNum];
 %     disp(fPath);
