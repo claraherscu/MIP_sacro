@@ -12,12 +12,18 @@ Rconv = 0.3;
 if zoom
     Rconv = 0.6;
 end
+
 for j = 10:10:topSlice;    
     convhullWidth(end+1) = getWidth(bonesSeg(:,:,j));
     % Last value much smaller than max, we started the spine
     if convhullWidth(end) < max(convhullWidth)*Rconv;
         hipsEnd = j - 10;
         spineStart = j;
+        
+        % TODO: temporary, remove this
+        display('set hipsEnd to');
+        display(hipsEnd);
+        
         break;
     end
 end
@@ -49,6 +55,10 @@ for j = hipsEnd:-1:1;
     spinePixels(end+1) = numel(find(spineImg));
     if spinePixels(end) < 30
         hipsStart = j;
+        
+        % TODO: temporary, remove this
+        display('hipsStart was set to:');
+        display(hipsStart);
         break;
     end
 end
@@ -56,6 +66,10 @@ end
 if ~exist('hipsStart','var')
     [~,j] = min(spinePixels);
     hipsStart = hipsEnd - j + 1;
+    
+    % TODO: temporary, remove this
+    display('hipsStart was set to:');
+    display(hipsStart);
 end
     
 if ~exist('hipsStart','var')

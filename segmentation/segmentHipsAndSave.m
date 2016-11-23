@@ -12,6 +12,10 @@ end
 slices = size(vol,3); display(slices);
 vol = dicom2niftiVol(vol, dicomInfo);
 bonesSeg = getBones(vol, 0);
+
+% TODO: implement isUpsideDown and then flip the picture upsideDown if
+% needed.
+
 hipsSeg = getHips(bonesSeg, 0, vol); clearvars bonesSeg;
 if exist('outfile','var')
     close all;

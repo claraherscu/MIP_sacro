@@ -1,6 +1,6 @@
 function [ zoom ] = isHipsZoom( seg )
 %ISHIPSZOOM Summary of this function goes here
-%   Detailed explanation goes here
+%   seg : bones segmentation
 
 zoom = 0;
 picWidth = size(seg,1);
