@@ -11,7 +11,8 @@ function [ bonesSeg ] = getBones( volume, fill, minTh )
 % between 150:500.
 
 global maxTh;
-maxTh = 1300;
+maxTh = 1300; % original
+% maxTh = 600; % testing the best maxTh
 R = 3;
 % Search i_min
 if ~exist('minTh','var')

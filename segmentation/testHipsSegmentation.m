@@ -26,7 +26,7 @@ problematicHipsSegment = {};
 % problematicHipsSegment{end+1} = '4015005435619';
 % --- this one was segmented correctly despite this fact, the first one 
 % wasn't ---
-% problematicHipsSegment{end+1} = '4015006182930';
+problematicHipsSegment{end+1} = '4015006182930';
 
 
 for i = 1:numel(problematicHipsSegment)
@@ -34,7 +34,7 @@ for i = 1:numel(problematicHipsSegment)
 %     disp(fPath);
     hipsFile = [fPath '/segmentationWithCanny.mat'];
     if exist(fPath,'file') 
-        sdisplay(fPath);
+        display(fPath);
         filename = [basefolder, problematicHipsSegment{i}];               
         tic; [ hipsSeg ] = segmentHipsAndSave(filename,'withCanny'); toc;
 %         hipsFile = [fPath '/segmentationWithCanny'];

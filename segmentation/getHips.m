@@ -31,6 +31,7 @@ end
 if ~exist('hipsEnd','var')
     hipsEnd = topSlice-10;
     spineStart = topSlice;
+    display('hipsEnd was set to topSlice - 10');
 end
 
 if ~exist('hipsEnd','var')
@@ -44,7 +45,7 @@ if square(1) == 0 || square(2) == 0
     square = [1 size(bonesSeg,1) 1 size(bonesSeg,2)];
 end
 lowerSpine = zeros(size(bonesSeg),'int8');
-% As we care about the sacro-ilium join we can look until the end of the
+% As we care about the sacro-ilium joint we can look until the end of the
 % spine the y axis as well
 lowerSpine(square(1):square(2), :, 1:spineStart) = 1;
 yMinSpine = square(3);
@@ -66,10 +67,6 @@ end
 if ~exist('hipsStart','var')
     [~,j] = min(spinePixels);
     hipsStart = hipsEnd - j + 1;
-    
-    % TODO: temporary, remove this
-    display('hipsStart was set to:');
-    display(hipsStart);
 end
     
 if ~exist('hipsStart','var')
