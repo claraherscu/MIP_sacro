@@ -23,7 +23,7 @@ problematicHipsSegment{end+1} = '4015005435619';
 problematicHipsSegment{end+1} = '4015006182930';
 
 
-segScores = {};
+segScores = zeros(numel(dataWithCanny));
 
 for i = 1:numel(dataWithCanny)
 % for i = 1
@@ -33,7 +33,7 @@ for i = 1:numel(dataWithCanny)
             display(fPath);
             filename = [basefolder, dataWithCanny{i}.accessNum];               
             tic; [seg, score, noise] = segmentSij(filename,''); toc;
-            segScores{end+1} = score;
+            segScores(i) = score;
         end
     end
 end
