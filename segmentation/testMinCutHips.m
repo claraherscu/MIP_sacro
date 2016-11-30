@@ -22,10 +22,10 @@ problematicHipsSegment{end+1} = '4015006233633';
 problematicHipsSegment{end+1} = '4015005435619';
 problematicHipsSegment{end+1} = '4015006182930';
 
+% load segScoresSmallIliumPrior;
+segScoreLargeIlium = {};
 
-segScores = {};
-
-for i = 1:numel(dataWithCanny)
+for i = 1:6
 % for i = 1
     fPath = [basefolder, dataWithCanny{i}.accessNum];
     if any(~isequal(dataWithCanny{i}.accessNum, problematicHipsSegment))
@@ -33,9 +33,10 @@ for i = 1:numel(dataWithCanny)
             display(fPath);
             filename = [basefolder, dataWithCanny{i}.accessNum];               
             tic; [seg, score, noise] = segmentSij(filename,''); toc;
-            segScores{end+1} = score;
+            segScoreLargeIlium{end+1} = score;
         end
     end
 end
 
-display(segScores);
+display(segScoreLargeIlium);
+save('segScoreLargeIliumPrior', 'segScoreLargeIlium');

@@ -10,7 +10,8 @@ square = getConvhullSquare(hipsSeg(:,:,centerZ));
 points = [];
 if strcmp(side, 'right')
     centerX = (square(1) + square(2)) / 2;
-    leftSide = square(1) + abs(square(1) - centerX) / 10; %originally was 3
+%     leftSide = square(1) + abs(square(1) - centerX) / 10; %originally was 3
+    leftSide = square(1) + abs(square(1) - centerX) / 3; %originally was 3
     for i = hipsStart:hipsEnd
         for j = 1:cols
             p = find(hipsSeg(:, j, i),1,'first');
@@ -21,7 +22,8 @@ if strcmp(side, 'right')
     end
 else % right side
     centerX = (square(1) + square(2)) / 2;
-    rightSide = square(2) - abs(square(2) - centerX) / 10; %originally was 3
+%     rightSide = square(2) - abs(square(2) - centerX) / 10; %originally was 3
+    rightSide = square(2) - abs(square(2) - centerX) / 3; %originally was 3
     for i = hipsStart:hipsEnd
         for j = 1:cols
             p = find(hipsSeg(:, j, i),1,'last');
