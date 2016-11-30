@@ -20,11 +20,10 @@ hipsSeg = getHips(bonesSeg, 0, vol); clearvars bonesSeg;
 if exist('outfile','var')
     close all;
     try
-        picsSeries(hipsSeg, vol, [basefolder, '/', folder, '_', outfile, 'Hips.jpg']);
+        picsSeries(hipsSeg, vol, [basefolder, '/', folder, '_', outfile, '.jpg']);
     catch
         display('Problem showing the images');
     end
 end
-
 end
 
