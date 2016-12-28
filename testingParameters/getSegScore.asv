@@ -1,0 +1,15 @@
+function [ score ] = getSegScore( seg )
+%GETSEGSCORE calculates the score of the segmentation - lower score is
+%better
+%   the score is the number of voxels in the intersection of the sacrum and
+%   the ilium in the given segmentation
+
+    segL = seg.L;
+    segR = seg.R;
+    sacro = seg == 1 | seg == 4;
+    ilium = seg == 2 | seg == 3;
+    intersection = sacro & ilium;
+    score = sum(intersection(:));
+
+end
+
