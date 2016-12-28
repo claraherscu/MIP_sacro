@@ -43,15 +43,16 @@ end
 function minTh = searchMinTh(volume)
 
 global maxTh;
-X = 150:20:500;
+X = 150:10:500;
 components = [];
+% components = zeros(18);
 
 for i = 1:size(X,2);
     minTh = X(i);
     imgSeg = volume < maxTh & volume > minTh;    
     CC = bwconncomp(imgSeg, 26);
-    display(['i_min = ', num2str(minTh), ...
-        ', conncomp = ', num2str(CC.NumObjects)])
+%     display(['i_min = ', num2str(minTh), ...
+%         ', conncomp = ', num2str(CC.NumObjects)])
     components(end+1) = CC.NumObjects;
 end
 

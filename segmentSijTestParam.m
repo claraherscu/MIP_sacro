@@ -1,9 +1,6 @@
-function [ seg, score, noise ] = segmentSij( fPath, outfile  )
-%SEGMENTSIJ Run segmentation on the SacroIlium Joint
-% We need to point the folder containing the DICOM files.
-% Optional
-%  - boolean outfile: 
-%        Specify if we want to generate a jpg image with the output results
+function [ seg, score, noise ] = segmentSijTestParam( fPath, outfile, iliumParam )
+%SEGMENTSIJTESTPARAM Run segmentation on the SacroIlium Joint
+%   testing the ilium init param
 [basefolder, folder] = fileparts(fPath);
 if exist([fPath,'/',folder,'.mat'],'file')
     load([fPath,'/',folder,'.mat'])
@@ -15,8 +12,8 @@ slices = size(vol,3); display(slices);
 vol = dicom2niftiVol(vol, dicomInfo);
 bonesSeg = getBones(vol, 0);
 hipsSeg = getHips(bonesSeg, 0, vol); clearvars bonesSeg;
-[segR, cutR] = minCutHips(vol, dicomInfo, hipsSeg, 'right', 10);
-[segL, cutL] = minCutHips(vol, dicomInfo, hipsSeg, 'left', 10);
+[segR, cutR] = minCutHipsTestParam(vol, dicomInfo, hipsSeg, 'right', 10, iliumParam);
+[segL, cutL] = minCutHipsTestParam(vol, dicomInfo, hipsSeg, 'left', 10, iliumParam);
 if exist('outfile','var')
     close all;
     try

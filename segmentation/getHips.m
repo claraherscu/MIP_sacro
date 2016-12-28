@@ -12,12 +12,21 @@ Rconv = 0.3;
 if zoom
     Rconv = 0.6;
 end
+
 for j = 10:10:topSlice;    
     convhullWidth(end+1) = getWidth(bonesSeg(:,:,j));
+    
+%     % TODO: temporary, remove this.
+%     display(convhullWidth);
+    
     % Last value much smaller than max, we started the spine
     if convhullWidth(end) < max(convhullWidth)*Rconv;
         hipsEnd = j - 10;
         spineStart = j;
+        
+%         % TODO: temporary, remove this
+%         display('set hipsEnd to');
+%         display(hipsEnd);        
         break;
     end
 end
@@ -25,6 +34,7 @@ end
 if ~exist('hipsEnd','var')
     hipsEnd = topSlice-10;
     spineStart = topSlice;
+    display('hipsEnd was set to topSlice - 10');
 end
 
 if ~exist('hipsEnd','var')
@@ -38,7 +48,7 @@ if square(1) == 0 || square(2) == 0
     square = [1 size(bonesSeg,1) 1 size(bonesSeg,2)];
 end
 lowerSpine = zeros(size(bonesSeg),'int8');
-% As we care about the sacro-ilium join we can look until the end of the
+% As we care about the sacro-ilium joint we can look until the end of the
 % spine the y axis as well
 lowerSpine(square(1):square(2), :, 1:spineStart) = 1;
 yMinSpine = square(3);
@@ -47,8 +57,19 @@ spinePixels = [];
 for j = hipsEnd:-1:1;
     spineImg = lowerSpine(:,:,j) & bonesSeg(:,:,j);
     spinePixels(end+1) = numel(find(spineImg));
+    
+%     % TODO: temporary, remove this
+%     display('spine pixels:');
+%     display(spinePixels(end));
+%     display('at');
+%     display(j);
+    
     if spinePixels(end) < 30
         hipsStart = j;
+        
+%         % TODO: temporary, remove this
+%         display('hipsStart was set to:');
+%         display(hipsStart);
         break;
     end
 end

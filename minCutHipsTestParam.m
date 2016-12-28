@@ -1,6 +1,6 @@
-function [ seg, cutScore ] = minCutHips( vol, info, hipsSeg, side, conn )
-%MINCUTHIPS Summary of this function goes here
-%   Detailed explanation goes here
+function [ seg, cutScore ] = minCutHipsTestParam( vol, info, hipsSeg, side, conn, iliumParam )
+%MINCUTHIPSTESTPARAM Summary of this function goes here
+%   testign ilium initialization param
 
 % We only take the elements which are at least THRESH_SIZE percent bigger than
 % the biggest element
@@ -64,7 +64,7 @@ S = sparse(Sx,Sy,weights,nodesNum,nodesNum);
 
 % Mark all of the nodes of the ilium
 display('Initialize ilium');
-p = getIliumPoints(hipsSide, side);
+p = getIliumPointsTestParam(hipsSide, side, iliumParam);
 ilium = zeros(size(hipsSide),'int8');
 ilium(p) = 1;
 if ~hipsZoom
