@@ -6,7 +6,6 @@ load matlabData;
 basefolder = 'D://MIP_sacro/sacro/dataset/';
 dataWithCanny = data;
 
-allScores = [];
 initParams = 2:2:42;
 for i = 1:10
     fPath = [basefolder, dataWithCanny{i}.accessNum];
@@ -24,8 +23,4 @@ for i = 1:10
     figure;
     bar(initParams, scoresForThisSample, 'blue');
     saveas(gcf, ['testingParameters/scoresForSample',num2str(i),'.jpg']);
-    allScores(end + 1) = scoresForThisSample;
 end
-display(allScores);
-dirPath = 'C:\Users\User\Documents\GitHub\MIP_sacro\testingParameters\';
-save([dirPath, 'allScoresIliumParam2-21'], 'allScores');
