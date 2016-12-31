@@ -7,7 +7,7 @@ basefolder = 'D://MIP_sacro/sacro/dataset/';
 dataWithCanny = data;
 
 initParams = 2:2:42;
-for i = 1:10
+for i = 5:20
     fPath = [basefolder, dataWithCanny{i}.accessNum];
     scoresForThisSample = [];
     for initIliumParam = 2:2:42
