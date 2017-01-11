@@ -3,13 +3,13 @@ function [imgs] = getImagesFromBorderSeg( seg, vol, pixelSz, imgMmSz, pixelImgSz
 %   Detailed explanation goes here
 imgs = {};
 imgSacrumL = getImagesFromBoneSide(seg, vol, 'sacrum','L', pixelSz, imgMmSz, pixelImgSz);
-% imgSacrumR = getImagesFromBoneSide(seg, vol, 'sacrum','R', pixelSz, imgMmSz, pixelImgSz);
-% imgIliumL = getImagesFromBoneSide(seg, vol, 'ilium','L', pixelSz, imgMmSz, pixelImgSz);
-% imgIliumR = getImagesFromBoneSide(seg, vol, 'ilium','R', pixelSz, imgMmSz, pixelImgSz);
-% imgs.sacrumL = imgSacrumL;
-% imgs.sacrumR = imgSacrumR;
-% imgs.iliumL = imgIliumL;
-% imgs.iliumR = imgIliumR;
+%imgSacrumR = getImagesFromBoneSide(seg, vol, 'sacrum','R', pixelSz, imgMmSz, pixelImgSz);
+%imgIliumL = getImagesFromBoneSide(seg, vol, 'ilium','L', pixelSz, imgMmSz, pixelImgSz);
+%imgIliumR = getImagesFromBoneSide(seg, vol, 'ilium','R', pixelSz, imgMmSz, pixelImgSz);
+%imgs.sacrumL = imgSacrumL;
+%imgs.sacrumR = imgSacrumR;
+%imgs.iliumL = imgIliumL;
+%imgs.iliumR = imgIliumR;
 imgs = imgSacrumL;
 end
 

@@ -4,7 +4,7 @@ dataWithCanny = data;
 for i = 1:numel(dataWithCanny)
     fPath = [basefolder, dataWithCanny{i}.accessNum];
     disp(fPath);
-    segFile = [fPath '/segmentationWithCanny.mat'];
+    segFile = [fPath '/segmentation.mat'];
     if exist(fPath,'file') 
         display(fPath);
 
@@ -13,11 +13,11 @@ for i = 1:numel(dataWithCanny)
         %    continue;
         end
         filename = [basefolder, dataWithCanny{i}.accessNum];               
-        tic; [seg, score, noise] = segmentSij(filename,'withCanny'); toc;
+        tic; [seg, score, noise] = segmentSij(filename); toc;
         dataWithCanny{i}.noise = noise;        
         dataWithCanny{i}.score = score;
         info = dataWithCanny{i};
-        segFile = [fPath '/segmentationWithCanny'];
-        % save(segFile, 'seg', 'info');
+        segFile = [fPath '/segmentation'];
+        save(segFile, 'seg', 'info');
     end
 end
