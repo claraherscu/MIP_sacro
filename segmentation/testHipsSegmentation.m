@@ -43,7 +43,6 @@ dataWithCanny = data;
 %         filename = [basefolder, problematicHipsSegment{i}];               
 %         tic; [ hipsSeg ] = segmentHipsAndSave(filename,'Hips'); toc;
 %     end
-<<<<<<< HEAD
 % end
 
 
@@ -57,6 +56,4 @@ for i = 1:numel(dataWithCanny)
         display(dicomInfo.scales(3));
     end
 end
-=======
-% end
->>>>>>> origin/master
+

@@ -30,9 +30,20 @@ scoreL = scoreSegmentation(segL,vol,dicomInfo,'left');
 scoreR = scoreSegmentation(segR,vol,dicomInfo,'right');
 score = [scoreL cutL;scoreR cutR];
 noise = getNoiseValue(vol);
-saveSeg ( segL, segR, fPath, 'seg' );
+saveSeg ( segL, segR, fPath );
 seg.L = segL;
 seg.R = segR;
 end
 
 
+function saveSeg ( segL, segR, fPath)
+    segResult = or(segL, segR);
+    dicm2nii(fPath, fPath, 'nii.gz');
+    file = dir([fPath '/*.nii.gz']);
+    filename = ['/' file.name];
+    
+    niiStruct = load_untouch_nii_gzip([fPath filename]);
+    niiStruct.img = segResult;
+    % saving as a new nifty file
+    save_untouch_nii_gzip(niiStruct, [fPath 'seg.nii.gz']);
+end

@@ -26,14 +26,13 @@ problematicHipsSegment{end+1} = '4015006182930';
 segScoreLargeIlium = {};
 % segScoreSmallIlium = {};
 
-for i = 11:20
+for i = 1
     fPath = [basefolder, dataWithCanny{i}.accessNum];
     if any(~isequal(dataWithCanny{i}.accessNum, problematicHipsSegment))
         if exist(fPath,'file') 
             display(fPath);
             filename = [basefolder, dataWithCanny{i}.accessNum];               
-            tic; [seg, score, noise] = segmentSij(filename,'_largeIlium'); toc;
-            segScoreLargeIlium{end+1} = score;
+            tic; [seg, score, noise] = segmentSij(filename,'_test'); toc;
         end
     end
 end

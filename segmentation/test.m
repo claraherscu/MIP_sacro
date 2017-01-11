@@ -1,16 +1,15 @@
 load matlabData;
-basefolder = 'sacro/dataset/';
+basefolder = 'D://MIP_sacro/sacro/dataset/';
 dataWithCanny = data;
-for i = 1:numel(dataWithCanny)
+for i = 2%1:numel(dataWithCanny)
     fPath = [basefolder, dataWithCanny{i}.accessNum];
     disp(fPath);
     segFile = [fPath '/segmentation.mat'];
     if exist(fPath,'file') 
         display(fPath);
-
         if exist(segFile,'file') > 0
             display('Already segmented');
-        %    continue;
+            continue;
         end
         filename = [basefolder, dataWithCanny{i}.accessNum];               
         tic; [seg, score, noise] = segmentSij(filename); toc;
