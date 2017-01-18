@@ -16,17 +16,10 @@ end
 for j = 10:10:topSlice;    
     convhullWidth(end+1) = getWidth(bonesSeg(:,:,j));
     
-%     % TODO: temporary, remove this.
-%     display(convhullWidth);
-    
     % Last value much smaller than max, we started the spine
     if convhullWidth(end) < max(convhullWidth)*Rconv;
         hipsEnd = j - 10;
-        spineStart = j;
-        
-%         % TODO: temporary, remove this
-%         display('set hipsEnd to');
-%         display(hipsEnd);        
+        spineStart = j;        
         break;
     end
 end
@@ -58,18 +51,8 @@ for j = hipsEnd:-1:1;
     spineImg = lowerSpine(:,:,j) & bonesSeg(:,:,j);
     spinePixels(end+1) = numel(find(spineImg));
     
-%     % TODO: temporary, remove this
-%     display('spine pixels:');
-%     display(spinePixels(end));
-%     display('at');
-%     display(j);
-    
     if spinePixels(end) < 30
         hipsStart = j;
-        
-%         % TODO: temporary, remove this
-%         display('hipsStart was set to:');
-%         display(hipsStart);
         break;
     end
 end
@@ -90,6 +73,12 @@ end
 
 display(hipsStart);
 display(hipsEnd);
+
+% at this point, if |hipsStart - hipsEnd| < 15, we should add some slices
+if (abs(hipsStart - hipsEnd) < 15)
+    hipsStart = max(hipsStart - 15, 1);
+%     hipsEnd = min(hipsEnd + 15, size(bonesSeg,3));
+end
 
 hipsArea = zeros(size(bonesSeg),'int8');
 hipsArea(:,yMinSpine:end ,hipsStart:hipsEnd) = 1;
@@ -132,6 +121,5 @@ if numel(x) == 0
 end
 idxs = convhull(x,y, 'simplify', true);
 xh = x(idxs);
-% yh = y(idxs);
 width = max(xh) - min(xh);
 end
