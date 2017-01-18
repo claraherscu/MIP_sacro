@@ -23,10 +23,10 @@ problematicHipsSegment{end+1} = '4015005435619';
 problematicHipsSegment{end+1} = '4015006182930';
 
 % load segScoresSmallIliumPrior;
-segScoreLargeIlium = {};
+% segScoreLargeIlium = {};
 % segScoreSmallIlium = {};
 
-for i = 1
+for i = 1:10
     fPath = [basefolder, dataWithCanny{i}.accessNum];
     if any(~isequal(dataWithCanny{i}.accessNum, problematicHipsSegment))
         if exist(fPath,'file') 
@@ -37,5 +37,5 @@ for i = 1
     end
 end
 
-dirPath = 'C:\Users\User\Documents\GitHub\MIP_sacro\testingParameters\';
-save([dirPath, 'segScoreLargeIliumPrior11-20'], 'segScoreLargeIlium');
+% dirPath = 'C:\Users\User\Documents\GitHub\MIP_sacro\testingParameters\';
+% save([dirPath, 'segScoreLargeIliumPrior11-20'], 'segScoreLargeIlium');

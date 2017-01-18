@@ -1,9 +1,9 @@
 function saveSeg ( segL, segR, fPath, outname)
-    segResult = fliplr(or(segL, segR));
+    segResult = fliplr(segL + segR);
     newfPath = strrep(fPath, '/', '\');
     dicm2nii(newfPath, newfPath, 'nii.gz');
     file = dir([newfPath '\*.nii.gz']);
-    filename = ['\' file.name];
+    filename = ['\' file(1).name];
     display(['loading ' newfPath filename]);
     niiStruct = load_untouch_nii_gzip([newfPath filename]);
     niiStruct.img = segResult;

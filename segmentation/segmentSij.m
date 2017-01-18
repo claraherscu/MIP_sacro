@@ -17,6 +17,7 @@ bonesSeg = getBones(vol, 0);
 hipsSeg = getHips(bonesSeg, 0, vol); clearvars bonesSeg;
 [segR, cutR] = minCutHips(vol, dicomInfo, hipsSeg, 'right', 10);
 [segL, cutL] = minCutHips(vol, dicomInfo, hipsSeg, 'left', 10);
+
 if exist('outfile','var')
     close all;
     try
@@ -26,6 +27,7 @@ if exist('outfile','var')
         display('Problem showing the images');
     end
 end
+
 scoreL = scoreSegmentation(segL,vol,dicomInfo,'left');
 scoreR = scoreSegmentation(segR,vol,dicomInfo,'right');
 score = [scoreL cutL;scoreR cutR];

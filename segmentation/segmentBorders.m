@@ -1,5 +1,5 @@
 basefolder = 'D://MIP_sacro/sacro/dataset/';
-for i = 2%1:numel(data)
+for i = 8%1:numel(data)
     d = data{i};
     segR = [d.accessNum, 'R'];
     segL = [d.accessNum, 'L'];
@@ -14,7 +14,15 @@ for i = 2%1:numel(data)
             pixelSz = info.score(1,end-3);
             pixelZSz = info.score(1,end-2);
             segBorder = segmentRelevantBorders(seg,pixelSz,pixelZSz);
-%             segBorder = segmentRelevantBorders(seg,pixelSz);
+
+            % check if the border is simmetric
+%             isSimmetric = isSimmetricBorder(segBorder, pixelSz);
+%             if(~isSimmetric)
+%                 display('border is not simmetric');
+%             else
+%                 display('border is simmetric');
+%             end
+
             outfile = [basefolder, d.accessNum, '/segBorder'];
             save(outfile, 'segBorder', 'info', 'segBorder');
             saveBorderSeg(segBorder.L, segBorder.R, [basefolder d.accessNum], 'segBorder');

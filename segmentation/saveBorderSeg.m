@@ -1,5 +1,5 @@
 function saveBorderSeg ( segL, segR, fPath, outname)
-    segResult = fliplr(or(segL, segR));
+    segResult = fliplr(segL + segR);
     newfPath = strrep(fPath, '/', '\');
     file = dir([newfPath '\seg.nii.gz']);
     filename = ['\' file.name];

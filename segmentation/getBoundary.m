@@ -1,5 +1,5 @@
 function [boundary] = getBoundary(seg, side)
-    %GETBOUNDARY Get the outer boundary of the border segmentation
+%GETBOUNDARY Get the outer boundary of the border segmentation
     boundary = zeros(size(seg));
     idxs = [];
     [rows,cols,~] = size(seg);    

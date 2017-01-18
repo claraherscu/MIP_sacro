@@ -1,0 +1,81 @@
+4015006075518
+resolusion details:2.5
+4015006017986
+resolusion details:2.5
+4015005895586
+resolusion details:2.5
+4015006419774
+resolusion details:2.5
+4015006419945
+resolusion details:2.5
+4015006669301
+resolusion details:2.5
+4015004853476
+resolusion details:2.5
+4015004843912
+resolusion details:3
+4015006407282
+resolusion details:2.5
+4015006627185
+resolusion details:2.5
+4015005691596
+resolusion details:2.5
+4015006259613
+resolusion details:2.5
+4015006578421
+resolusion details:2.5
+4015006701858
+resolusion details:2.5
+4015006138581
+resolusion details:2.5
+4015005836814
+resolusion details:2.5
+4015006201223
+resolusion details:2.5
+4015006215195
+resolusion details:2.5
+4015006598468
+resolusion details:2.5
+4015006432452
+resolusion details:2.5
+4015006554212
+resolusion details:2.5
+4015006522124
+resolusion details:2.5
+4015005428443
+resolusion details:3
+4015006233633
+resolusion details:2.5
+4015006348431
+resolusion details:2.5
+4015006619901
+resolusion details:2.5
+4015005425376
+resolusion details:2.5
+4015006088494
+resolusion details:3
+4015005874490
+resolusion details:3
+4015005251755
+resolusion details:3
+4015006431281
+resolusion details:2.5
+4015006182930
+resolusion details:2.5
+4015005334645
+resolusion details:2.5
+4015006668913
+resolusion details:2.5
+4015005969234
+resolusion details:2.5
+4015006831465
+resolusion details:2.5
+4015005362745
+resolusion details:3
+4015005622717
+resolusion details:3
+4015005435619
+resolusion details:2.5
+4015005378993
+resolusion details:2.5
+total amount of images with bad resolution: 40

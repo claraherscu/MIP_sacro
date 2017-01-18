@@ -81,17 +81,16 @@ display('Initialize sacrum');
 [hipsStart, hipsEnd] = getStartEnd(hipsSide);
 sacrum = zeros(size(hipsSide),'int8');
 sacrum (xMiddle, :, hipsStart:hipsEnd) = 1;
-% TODO, parametize this pixel value
 CM_4 = round(40/pixelSize);
 sacrum = imdilate(sacrum, strel('square', round(CM_4/3)));
 sacrum = hipsSide & sacrum;
 sacrum = imdilate(sacrum, strel('square', round(CM_4/3)));
 sacrum = hipsSide & sacrum;
 
-% i did one less dilation in order to prevent the sacrum from invading the
-% ilium accidentaly.
-sacrum = imdilate(sacrum, strel('square', round(CM_4/3)));
-sacrum = hipsSide & sacrum;
+% % i did one less dilation in order to prevent the sacrum from invading the
+% % ilium accidentaly.
+% sacrum = imdilate(sacrum, strel('square', round(CM_4/3)));
+% sacrum = hipsSide & sacrum;
 
 [sacrum, ilium] = extendSacrumIlium(hipsSeg, sacrum, ilium, side);
 sacrum = sacrum & hipsSide;

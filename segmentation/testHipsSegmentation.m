@@ -1,5 +1,5 @@
 load matlabData;
-basefolder = 'sacro/dataset/';
+basefolder = 'D://MIP_sacro/sacro/dataset/';
 dataWithCanny = data;
 
 % defining a container for all the places where i identified a clear 
@@ -41,19 +41,25 @@ dataWithCanny = data;
 %     if exist(fPath,'file') 
 %         display(fPath);
 %         filename = [basefolder, problematicHipsSegment{i}];               
-%         tic; [ hipsSeg ] = segmentHipsAndSave(filename,'Hips'); toc;
+%         tic; [ seg, ~, ~ ] = segmentSij(filename,'Hips'); toc;
+%         segFile = [fPath '/segmentation'];
+%         save(segFile, 'seg', 'info');
 %     end
 % end
 
-
+count = 0;
 for i = 1:numel(dataWithCanny)
-    fPath = [basefolder, dataWithCanny{i}];
+%     fPath = [basefolder, dataWithCanny{i}];
     if exist(fPath,'file') 
-        display(fPath);
-        filename = [basefolder, dataWithCanny{i}];               
-        dicomInfo = dicom_folder_info(fPath);
-        display('resolusion details:');
-        display(dicomInfo.scales(3));
+        filename = [basefolder, dataWithCanny{i}.accessNum];               
+        dicomInfo = dicom_folder_info(filename);
+        if(dicomInfo.Scales(3) > 2)
+            display(dataWithCanny{i}.accessNum);
+            display(['resolusion details:' num2str(dicomInfo.Scales(3))]);
+            count = count + 1;
+        else
+            display('resolution OK. skipped');
+        end
     end
 end
-
+display(['total amount of images with bad resolution', num2str(count)]);
