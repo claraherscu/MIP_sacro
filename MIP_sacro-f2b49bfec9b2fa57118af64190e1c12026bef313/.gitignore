@@ -1,0 +1,12 @@
+# Folder containing CT images
+sacro
+tests
+*.rar
+*.zip
+
+# emacs and vim files
+*~
+*#
+*\#*
+^\..*
+

@@ -7,5 +7,4 @@ runSegmentation;
 % borders
 segmentBorders;
 
-
 % 3) create image patches

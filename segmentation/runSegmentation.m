@@ -9,7 +9,7 @@ for i = 8%:10%:numel(dataWithCanny)
         display(fPath);
         if exist(segFile,'file') > 0
             display('Already segmented');
-            continue;
+%             continue;
         end
         filename = [basefolder, dataWithCanny{i}.accessNum];               
         tic; [seg, score, noise] = segmentSij(filename); toc;

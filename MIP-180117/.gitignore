@@ -1,0 +1,13 @@
+# Folder containing CT images
+sacro
+tests
+*.rar
+*.zip
+
+# emacs and vim files
+*~
+*#
+*\#*
+^\..*
+
+docs/150117 meeting/~$Sacroiliitis project - 150117.pptx

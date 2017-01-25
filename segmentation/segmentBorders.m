@@ -5,7 +5,6 @@ for i = 8%1:numel(data)
     segL = [d.accessNum, 'L'];
     segfile = [basefolder, d.accessNum,'/segmentation.mat'];
     if exist(segfile,'file')
-        clear segBones;
         load(segfile)
         if exist('seg','var')               
             disp(d.accessNum);
@@ -16,12 +15,15 @@ for i = 8%1:numel(data)
             segBorder = segmentRelevantBorders(seg,pixelSz,pixelZSz);
 
             % check if the border is simmetric
-%             isSimmetric = isSimmetricBorder(segBorder, pixelSz);
-%             if(~isSimmetric)
-%                 display('border is not simmetric');
-%             else
-%                 display('border is simmetric');
-%             end
+            hipsSegPath = [basefolder data{i}.accessNum '/hipsSeg.mat'];
+            load(hipsSegPath)
+            isSimmetric = isSimmetricBorder(hipsSeg, segBorder, pixelSz);
+            if(~isSimmetric)
+                display('border is not simmetric');
+                
+            else
+                display('border is simmetric');
+            end
 
             outfile = [basefolder, d.accessNum, '/segBorder'];
             save(outfile, 'segBorder', 'info', 'segBorder');

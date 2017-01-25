@@ -76,9 +76,12 @@ display(hipsEnd);
 
 % at this point, if |hipsStart - hipsEnd| < 15, we should add some slices
 if (abs(hipsStart - hipsEnd) < 15)
-    hipsStart = max(hipsStart - 15, 1);
-%     hipsEnd = min(hipsEnd + 15, size(bonesSeg,3));
+    hipsStart = max(hipsStart - 20, 1);
 end
+if (abs(hipsStart - hipsEnd) < 15)
+    hipsEnd = min(hipsEnd + 15, size(bonesSeg,3));
+end
+
 
 hipsArea = zeros(size(bonesSeg),'int8');
 hipsArea(:,yMinSpine:end ,hipsStart:hipsEnd) = 1;
