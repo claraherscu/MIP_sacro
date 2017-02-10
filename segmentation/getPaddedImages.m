@@ -1,4 +1,4 @@
-function [padded_L, padded_R] = getPaddedImages (hipsSeg, segBorder)
+function [padded_L, padded_R, padded_hips, padded_original] = getPaddedImages (hipsSeg, segBorder, original_vol)
     % find the center of the conv of the pelvis and mirror around it.
     x_middle = getXMiddle(hipsSeg);
     
@@ -8,9 +8,17 @@ function [padded_L, padded_R] = getPaddedImages (hipsSeg, segBorder)
         % should pad on the left of the image (big Xs)
         padded_L = padarray(segBorder.L, [diff 0], 'post');
         padded_R = padarray(segBorder.R, [diff 0], 'post');
+        padded_hips = padarray(hipsSeg, [diff 0], 'post');
+        if (nargin > 2)
+            padded_original = padarray(original_vol, [diff 0], 'post');
+        end
     else
         % should pad on the right of the image (small Xs)
         padded_L = padarray(segBorder.L, [-diff 0], 'pre');
         padded_R = padarray(segBorder.R, [-diff 0], 'pre');
+        padded_hips = padarray(hipsSeg, [-diff 0], 'pre');
+        if (nargin > 2)
+            padded_original = padarray(original_vol, [-diff 0], 'pre');
+        end
     end
 end

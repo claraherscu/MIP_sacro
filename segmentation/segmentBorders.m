@@ -20,7 +20,12 @@ for i = 8%1:numel(data)
             isSimmetric = isSimmetricBorder(hipsSeg, segBorder, pixelSz);
             if(~isSimmetric)
                 display('border is not simmetric');
-                
+                original_img_path = [basefolder, data{i}.accessNum];
+                original_vol = dicom_read_volume(original_img_path);
+                dicomInfo = dicom_folder_info(original_img_path);
+                original_vol = dicom2niftiVol(original_vol, dicomInfo);
+                newSegBorder = runBellmanFord(segBorder, hipsSeg, original_vol);
+                saveBorderSeg(newSegBorder.L, newSegBorder.R, [basefolder d.accessNum], 'segBorderBellmanFord');
             else
                 display('border is simmetric');
             end
