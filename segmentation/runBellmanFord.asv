@@ -37,7 +37,6 @@ function [ newBorderSeg ] = runBellmanFord ( borderSeg, hipsSeg, original_vol )
     end
     newBorderSeg.L = newBorderL;
     newBorderSeg.R = newBorderR;
-    
 end
 
 function [padded_roi, d] = getShortestPathForBorderSlice(borderSegSlice,...
@@ -65,25 +64,23 @@ function [padded_roi, d] = getShortestPathForBorderSlice(borderSegSlice,...
             'and sink: (' num2str(t(1)) ',' num2str(t(2)) ')']);
 
         % creating ROI
-        BL = [min(s(1),t(1)), min(s(2),t(2))] - 20;
-        UR = [max(s(1),t(1)), max(s(2),t(2))] + 20;
-%         if (s(1) < t(1))
-%             if (s(2) < t(2))
-%                 BL = s - 20;
-%                 UR = t + 20;
-%             else
-%                 BL = [s(1) - 20, t(2) - 20];
-%                 UR = [t(1) - 20, s(2) - 20];
-%             end
-%         else
-%             if (s(2) < t(2))
-%                 BL = [t(1) - 20, s(2) - 20];
-%                 UR = [s(1) - 20, t(2) - 20];
-%             else
-%                 BL = t - 20;
-%                 UR = s + 20;
-%             end
-%         end
+        if (s(1) < t(1))
+            if (s(2) < t(2))
+                BL = s - 20;
+                UR = t + 20;
+            else
+                BL = [s(1) - 20, t(2) - 20];
+                UR = [t(1) - 20, s(2) - 20];
+            end
+        else
+            if (s(2) < t(2))
+                BL = [t(1) - 20, s(2) - 20];
+                UR = [s(1) - 20, t(2) - 20];
+            else
+                BL = t - 20;
+                UR = s + 20;
+            end
+        end
         
         [ roi, pre_add_to_x, post_add_to_x, pre_add_to_y,...
                     post_add_to_y ] = getROI (original_vol_slice, BL, UR);
@@ -104,8 +101,8 @@ function [padded_roi, d] = getShortestPathForBorderSlice(borderSegSlice,...
         
         roi = zeros(size(roi));
         roi(path) = 1;
-        padded_roi = padarray(roi, [pre_add_to_x; pre_add_to_y], 'pre');
-        padded_roi = padarray(padded_roi, [post_add_to_x-1; post_add_to_y-1], 'post');
+        padded_roi = padarray(roi, [pre_add_to_x-1; pre_add_to_y], 'pre');
+        padded_roi = padarray(padded_roi, [post_add_to_x; post_add_to_y], 'post');
     end
 end
     
@@ -129,6 +126,7 @@ function [ sliceBorder ] = getSliceBorder (hipsSegSlice, ...
 %   OUTPUTS: *sliceBorder - matrix the same size of the border segmentation
 %           with 1's only where the best path is.
 
+    sliceBorder = zeros(size(border_slice_1));
     [padded_roi_1, path_1_d] = getShortestPathForBorderSlice(border_slice_1, ...
         hipsSegSlice, original_vol_slice);
     [padded_roi_2, path_2_d] = getShortestPathForBorderSlice(border_slice_2, ...
@@ -139,8 +137,6 @@ function [ sliceBorder ] = getSliceBorder (hipsSegSlice, ...
     else
         if ((path_2_d ~= 0) && (path_2_d < path_1_d))
             sliceBorder = padded_roi_2;
-        else
-            sliceBorder = zeros(size(original_vol_slice));
         end
     end
 end

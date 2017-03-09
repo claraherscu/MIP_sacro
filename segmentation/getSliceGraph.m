@@ -18,7 +18,7 @@ function [ G ] = getSliceGraph(slice)
     sigma = std(slice(:));
     
     % 4-neighbors of pixel i are:
-    % 1. i - 1, i + 1, i + r, i - r;
+    % i - 1, i + 1, i + r, i - r;
     neighbours = [-1,1,r,-r];
     for i = 1:dim
         % determine weight for each of i's neighbours

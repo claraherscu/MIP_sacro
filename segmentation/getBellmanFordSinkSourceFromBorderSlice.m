@@ -58,12 +58,6 @@ function [ sink, source ] = getBellmanFordSinkSourceFromBorderSlice( borderSlice
             sink(1) = floor(sink(1) + avg_x_diff/2);
             sink(2) = floor(sink(2) + avg_y_diff/2);
         end
-
-    %     figure;
-    %     hold on;
-    %     imagesc(borderSlice);
-    %     line([source_x, sink_x], [source_y, sink_y], 'Color', 'r', 'LineWidth',2);
-    %     hold off;
     end
 end
 
