@@ -14,15 +14,6 @@ function [ G, adj ] = getSliceGraph(slice, avg_intensity_sink_source)
     % creating a square zero matrix - will be filled with weights
     adj = zeros(dim, dim);
     
-    % initial weight will be exp(-(I(i)-I(j))^2/2sigma^2)
-    sigma = std(slice(:));
-    
-    % calculating weight relatively to s and t
-    diff_matrix = slice - avg_intensity_sink_source;
-    diff_std = std(diff_matrix(:));
-    
-    % calculating weights for "being closer to edge"
-    
     
     % 8-neighbors of pixel i are:
     % i - 1, i + 1, i + r, i - r; i - r - 1, i - r + 1, i + r -1, i + r + 1
@@ -35,10 +26,7 @@ function [ G, adj ] = getSliceGraph(slice, avg_intensity_sink_source)
             if (j > 0 && j <= dim) % in range
                 [j_x, j_y] = ind2sub(size(slice), j);
                 if (sqrt((i_x - j_x)^2 + (i_y - j_y)^2) < 2)                
-                    intensity_diff = slice(i) - slice(j);
-                    weight_neighbour_diff = exp(-((intensity_diff)^2)/(2*(sigma^2)));
-                    weight_s_t_diff = exp(-((diff_matrix(j_x,j_y))^2)/(2*(diff_std^2)));
-                    adj(i,j) = 1-exp(-weight_neighbour_diff - 1.5*weight_s_t_diff);
+                    adj(i,j) = calculateEdgeWeight(slice, i, j, avg_intensity_sink_source);
                     if(adj(i,j) < 0)
                         display(['i:' num2str(i) ' j:' num2str(j)])
                     end
