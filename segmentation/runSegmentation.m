@@ -1,7 +1,7 @@
 load matlabData;
 basefolder = 'D://MIP_sacro/sacro/dataset/';
 dataWithCanny = data;
-for i = 8%:10%:numel(dataWithCanny)
+for i = 1:10%:numel(dataWithCanny)
     fPath = [basefolder, dataWithCanny{i}.accessNum];
     disp(fPath);
     segFile = [fPath '/segmentation.mat'];

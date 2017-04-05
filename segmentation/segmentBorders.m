@@ -1,5 +1,5 @@
 basefolder = 'D://MIP_sacro/sacro/dataset/';
-for i = 8%1:numel(data)
+for i = 8%:numel(data)
     d = data{i};
     segR = [d.accessNum, 'R'];
     segL = [d.accessNum, 'L'];

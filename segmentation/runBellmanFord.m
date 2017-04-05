@@ -4,7 +4,7 @@ function [ newBorderSeg ] = runBellmanFord ( borderSeg, hipsSeg, original_vol )
 % previous segmentation attempts have failed
 
     %% getting all segmented borders
-    [padded_L, padded_R, padded_hips, padded_original] = getPaddedImages (hipsSeg, borderSeg, original_vol);
+    [padded_L, padded_R, padded_hips, padded_original, diff] = getPaddedImages (hipsSeg, borderSeg, original_vol);
     % [padded_L, padded_R] = getPaddedImages (hipsSeg, borderSeg);
     flipped_L = flipud(padded_L); flipped_R = flipud(padded_R);
 
@@ -28,20 +28,31 @@ function [ newBorderSeg ] = runBellmanFord ( borderSeg, hipsSeg, original_vol )
         original_vol_slice = padded_original(:,:,sliceNum);
         % left side
         currSliceBorderL = getSliceBorder (hipsSegSlice, original_vol_slice, ...
-            padded_L(:,:,sliceNum), flipped_R(:,:,sliceNum));
+            padded_L(:,:,sliceNum), flipped_R(:,:,sliceNum), sliceNum, 'L');
         newBorderL(:,:,sliceNum) = currSliceBorderL;
         % same for right side
         currSliceBorderR = getSliceBorder (hipsSegSlice, original_vol_slice, ...
-            padded_R(:,:,sliceNum), flipped_L(:,:,sliceNum));
+            padded_R(:,:,sliceNum), flipped_L(:,:,sliceNum), sliceNum, 'R');
         newBorderR(:,:,sliceNum) = currSliceBorderR;
     end
-    newBorderSeg.L = newBorderL;
-    newBorderSeg.R = newBorderR;
+    
+    %% cropping image to original size
+    if (diff >= 0)
+        % i added [diff 0] 'post'
+        unpadded_newBorderR = newBorderR(1:size(newBorderR,1)-diff,:,:);
+        unpadded_newBorderL = newBorderL(1:size(newBorderL,1)-diff,:,:);
+    else
+        % i added [-diff 0] 'pre'
+        unpadded_newBorderR = newBorderR(-diff:size(newBorderR,1),:,:);
+        unpadded_newBorderL = newBorderL(-diff:size(newBorderL,1),:,:);
+    end
+    newBorderSeg.L = fliplr(unpadded_newBorderL);
+    newBorderSeg.R = fliplr(unpadded_newBorderR);   
     
 end
 
 function [padded_roi, d] = getShortestPathForBorderSlice(borderSegSlice,...
-    hipsSegSlice, original_vol_slice)
+    hipsSegSlice, original_vol_slice, sliceNum, side, num)
 % GETSHORTESTPATHSFORBORDER looks for shortest paths in the graph created
 % by every slice in the given border.
 %   INPUTS: *borderSegSlice, hipsSegSlice, original_vol_slice - all padded 
@@ -61,51 +72,55 @@ function [padded_roi, d] = getShortestPathForBorderSlice(borderSegSlice,...
         d = 0;
     else
         % have results, should run bellman ford on this slice!
-        display(['got source: (' num2str(s(1)) ',' num2str(s(2)) ') '...
-            'and sink: (' num2str(t(1)) ',' num2str(t(2)) ')']);
+%         display(['got source: (' num2str(s(1)) ',' num2str(s(2)) ') '...
+%             'and sink: (' num2str(t(1)) ',' num2str(t(2)) ')']);
 
         % creating ROI
         BL = [min(s(1),t(1)), min(s(2),t(2))] - 20;
         UR = [max(s(1),t(1)), max(s(2),t(2))] + 20;
-%         if (s(1) < t(1))
-%             if (s(2) < t(2))
-%                 BL = s - 20;
-%                 UR = t + 20;
-%             else
-%                 BL = [s(1) - 20, t(2) - 20];
-%                 UR = [t(1) - 20, s(2) - 20];
-%             end
-%         else
-%             if (s(2) < t(2))
-%                 BL = [t(1) - 20, s(2) - 20];
-%                 UR = [s(1) - 20, t(2) - 20];
-%             else
-%                 BL = t - 20;
-%                 UR = s + 20;
-%             end
-%         end
-        
+
         [ roi, pre_add_to_x, post_add_to_x, pre_add_to_y,...
                     post_add_to_y ] = getROI (original_vol_slice, BL, UR);
+
         % creating graph according to original grey-values ROI
-        sliceGraph = getSliceGraph(roi);
+        s_intensity = original_vol_slice(s(1), s(2)); 
+        t_intensity = original_vol_slice(t(1), t(2));
+        avg_intensity_sink_source = (s_intensity + t_intensity)/2;
+        [sliceGraph, sliceAdj] = getSliceGraph(roi, avg_intensity_sink_source);
+%         save(['C:\\Users\User\Documents\GitHub\MIP_sacro\MAT files\roi_slice#' ...
+%             num2str(sliceNum) '_' side '_' num2str(num) '_adj.mat'], 'sliceAdj');
         [path, d] = shortestpath(sliceGraph, ...
             sub2ind(size(roi), s(1) - pre_add_to_x, s(2) - pre_add_to_y), ...
             sub2ind(size(roi), t(1) - pre_add_to_x, t(2) - pre_add_to_y), ...
             'Method', 'mixed');
+%         [path, d] = shortestpath(sliceGraph, ...
+%             sub2ind(size(roi), s(1) - pre_add_to_x, s(2) - pre_add_to_y), ...
+%             sub2ind(size(roi), t(1) - pre_add_to_x, t(2) - pre_add_to_y), ...
+%             'Method', 'unweighted');
+
+%         sliceG = getSliceGraph(roi);
+%         [d, path, ~] = graphshortestpath(sliceG, ...
+%             [s(1) - pre_add_to_x, s(2) - pre_add_to_y], ...
+%             [t(1) - pre_add_to_x, t(2) - pre_add_to_y]);
 
         % add the difference from the cropping
 %         to_add_linear = sub2ind(size(original_vol_slice), add_to_x, add_to_y);
 %         path = path + to_add_linear;
         
-        [X,Y] = ind2sub(size(roi), path); 
-        X = X + pre_add_to_x 
-        Y = Y + pre_add_to_y
+%         [X,Y] = ind2sub(size(roi), path); 
+%         X = X + pre_add_to_x; 
+%         Y = Y + pre_add_to_y;
         
         roi = zeros(size(roi));
+%         roi(cell2mat(path)) = 1;
         roi(path) = 1;
+        
+%         save(['C:\\Users\User\Documents\GitHub\MIP_sacro\MAT files\roi_slice#' ...
+%             num2str(sliceNum) '_' side '_' num2str(num) '.mat'], 'roi');
+        
         padded_roi = padarray(roi, [pre_add_to_x; pre_add_to_y], 'pre');
         padded_roi = padarray(padded_roi, [post_add_to_x-1; post_add_to_y-1], 'post');
+%         difference_beteween_padded_and_original = sum(padded_roi(:)) - sum(roi(:))
     end
 end
     
@@ -118,7 +133,7 @@ function [ roi, pre_add_to_x, post_add_to_x, pre_add_to_y, post_add_to_y ] = get
 end
 
 function [ sliceBorder ] = getSliceBorder (hipsSegSlice, ...
-    original_vol_slice, border_slice_1, border_slice_2)
+    original_vol_slice, border_slice_1, border_slice_2, sliceNum, side)
 %GETSLICEBORDER uses getShortestPathForBorderSlice to find the best shortest
 %path of each side of the slice
 %   INPUTS: *hipsSegSlice, original_vol_slice - all padded 
@@ -130,9 +145,9 @@ function [ sliceBorder ] = getSliceBorder (hipsSegSlice, ...
 %           with 1's only where the best path is.
 
     [padded_roi_1, path_1_d] = getShortestPathForBorderSlice(border_slice_1, ...
-        hipsSegSlice, original_vol_slice);
+        hipsSegSlice, original_vol_slice, sliceNum, side, 1);
     [padded_roi_2, path_2_d] = getShortestPathForBorderSlice(border_slice_2, ...
-        hipsSegSlice, original_vol_slice);
+        hipsSegSlice, original_vol_slice, sliceNum, side, 2);
     if ((path_1_d ~= 0) && (path_1_d < path_2_d))
         % path_1 is better
         sliceBorder = padded_roi_1;
@@ -143,4 +158,6 @@ function [ sliceBorder ] = getSliceBorder (hipsSegSlice, ...
             sliceBorder = zeros(size(original_vol_slice));
         end
     end
+%     save(['C:\\Users\User\Documents\GitHub\MIP_sacro\MAT files\roi_slice#' ...
+%             num2str(sliceNum) '_' side '_sliceBorder.mat'], 'sliceBorder');
 end

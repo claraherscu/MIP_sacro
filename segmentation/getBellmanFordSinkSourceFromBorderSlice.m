@@ -43,7 +43,8 @@ function [ sink, source ] = getBellmanFordSinkSourceFromBorderSlice( borderSlice
         % hipsSeg (should pick something out of the segmentation of the hips)
         source(1) = floor(center_x_top + avg_x_diff/2);
         source(2) = floor(center_y_top + avg_y_diff/2);
-        % not very likely but possible
+        % not very likely but possible 
+        % TODO: switch to another rule? or while? same for sink
         if (hipsSeg(source(1),source(2)) > 0)
             % we took a point to close, it's still in the pelvis
             source(1) = floor(source(1) + avg_x_diff/2);
@@ -58,6 +59,9 @@ function [ sink, source ] = getBellmanFordSinkSourceFromBorderSlice( borderSlice
             sink(1) = floor(sink(1) + avg_x_diff/2);
             sink(2) = floor(sink(2) + avg_y_diff/2);
         end
+        
+        % if distance between sink and source not big enough
+        % TODO
     end
 end
 
