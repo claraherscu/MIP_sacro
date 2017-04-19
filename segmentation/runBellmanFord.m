@@ -23,7 +23,7 @@ function [ newBorderSeg ] = runBellmanFord ( borderSeg, hipsSeg, original_vol )
     newBorderL = zeros(size(both_sides));
     newBorderR = zeros(size(both_sides));
     for sliceNum = pelvis_start:pelvis_end
-        display(['slice #' num2str(sliceNum)]);
+%         display(['slice #' num2str(sliceNum)]);
         hipsSegSlice = padded_hips(:,:,sliceNum);
         original_vol_slice = padded_original(:,:,sliceNum);
         % left side
@@ -81,11 +81,17 @@ function [padded_roi, d] = getShortestPathForBorderSlice(borderSegSlice,...
 
         [ roi, pre_add_to_x, post_add_to_x, pre_add_to_y,...
                     post_add_to_y ] = getROI (original_vol_slice, BL, UR);
+        % equalizing roi
+        roi = single(EqualizeRoiHist(roi));
 
         % creating graph according to original grey-values ROI
-        [s_intensity_logmean, ~] = lognstat(original_vol_slice(s(1)-2:s(1)+2, s(2)-2:s(2)+2)); 
-        [t_intensity_logmean, ~] = lognstat(original_vol_slice(t(1)-2:t(1)+2, t(2)-2:t(2)+2));
-        avg_intensity_sink_source = (s_intensity_logmean + t_intensity_logmean)/2;
+        s_intensities = original_vol_slice(s(1)-2:s(1)+2, s(2)-2:s(2)+2);
+        t_intensities = original_vol_slice(t(1)-2:t(1)+2, t(2)-2:t(2)+2);
+        % can't have negative values so should normalize roi first.
+%         [s_intensity_geomean, ~] = geomean(s_intensities(:).'); 
+%         [t_intensity_geomean, ~] = geomean(t_intensities(:).');
+%         avg_intensity_sink_source = (s_intensity_geomean + t_intensity_geomean)/2;
+        avg_intensity_sink_source = mean(mean(s_intensities)+mean(t_intensities));
         [sliceGraph, ~] = getSliceGraph(roi, avg_intensity_sink_source);
         
         % edit graph: create super-nodes for s and t

@@ -12,13 +12,17 @@ function [ weight ] = calculateEdgeWeight( slice, i, j, avg_intensity_sink_sourc
     diff_matrix = slice - avg_intensity_sink_source;
     diff_std = std(diff_matrix(:));
     
-    % calculating weights for "being closer to edge"
-    
-    % wrapping it all up
     intensity_diff = slice(i) - slice(j);
+    
+    % calculating weights for "being closer to edge"
+    weight_darker_neighbour = exp(intensity_diff);
+    
+    [i_x, i_y] = ind2sub(size(slice), i); [j_x, j_y] = ind2sub(size(slice), j);
+    % wrapping it all up
     weight_neighbour_diff = exp(-((intensity_diff)^2)/(2*(sigma^2)));
     weight_s_t_diff = exp(-((diff_matrix(j_x,j_y))^2)/(2*(diff_std^2)));
-    weight = 1-exp(-weight_neighbour_diff - 1.5*weight_s_t_diff);
+    weight = 1-exp(-0.1*weight_neighbour_diff - 0.15*weight_s_t_diff - ...
+        0.85*weight_darker_neighbour);
 
 end
 

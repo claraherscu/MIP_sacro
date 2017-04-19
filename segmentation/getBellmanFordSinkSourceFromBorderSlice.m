@@ -19,10 +19,10 @@ function [ sink, source ] = getBellmanFordSinkSourceFromBorderSlice( borderSlice
         % slice or should prevent this function from being called on this
         % situation at all.
         source(1) = -1; source(2) = -1; sink(1) = -1; sink(2) = -1;
-        display('no border on current slice');
+%         display('no border on current slice');
 %         return;
     else
-        display('found border on current slice');
+%         display('found border on current slice');
     %     slope_left = (y_left_top - y_left_down)/(x_left_top - x_left_down);
     %     slope_right = (y_right_top - y_right_down)/(x_right_top - x_right_down);
     %     avg_slope = (slope_left + slope_right)/2;
