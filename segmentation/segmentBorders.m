@@ -1,4 +1,6 @@
+load matlabData;
 basefolder = 'D://MIP_sacro/sacro/dataset/';
+
 for i = 8%:numel(data)
     d = data{i};
     segR = [d.accessNum, 'R'];
@@ -26,6 +28,7 @@ for i = 8%:numel(data)
                 original_vol = dicom2niftiVol(original_vol, dicomInfo);
                 newSegBorder = runBellmanFord(segBorder, hipsSeg, original_vol);
                 saveBorderSeg(newSegBorder.L, newSegBorder.R, [basefolder d.accessNum], 'segBorderBellmanFord');
+                segBorder = newSegBorder;
             else
                 display('border is simmetric');
             end

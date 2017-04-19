@@ -13,6 +13,7 @@ else
 end
 slices = size(vol,3); display(slices);
 vol = dicom2niftiVol(vol, dicomInfo);
+save([fPath, '/', folder, '.mat'], 'vol');
 bonesSeg = getBones(vol, 0);
 hipsSeg = getHips(bonesSeg, 0, vol); 
 
