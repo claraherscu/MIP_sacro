@@ -1,4 +1,4 @@
-function [ seg, cutScore ] = minCutHips( vol, info, hipsSeg, side, conn )
+function [ seg, cutScore, hipsCT ] = minCutHips( vol, info, hipsSeg, side, conn, fPath )
 %MINCUTHIPS Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -25,6 +25,13 @@ end
 %intType = class(vol);
 %eval(['hipsSide = ' intType '(hipsSide);'])
 hipsCT = vol .* single(hipsSide);
+
+% equalizing histogram of hipsCT
+hipsCT = EqualizeSingleImageHistogram(hipsCT);
+% % saving equalized image
+% hipsEqImg = load_untouch_nii_gzip([fPath '\*.nii.gz']);
+% hipsEqImg.img = fliplr(hipsCT);
+% save_untouch_nii_gzip(hipsEqImg, [fPath '\' side '_hips_equalized.nii.gz']);
 
 nodesIdx = find(hipsSide);
 maxIdx = max(nodesIdx);

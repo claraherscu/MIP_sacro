@@ -29,10 +29,16 @@ function [ newBorderSeg ] = runBellmanFord ( borderSeg, hipsSeg, original_vol )
         % left side
         currSliceBorderL = getSliceBorder (hipsSegSlice, original_vol_slice, ...
             padded_L(:,:,sliceNum), flipped_R(:,:,sliceNum), sliceNum, 'L');
+        if(currSliceBorderL == null)
+            return
+        end
         newBorderL(:,:,sliceNum) = currSliceBorderL;
         % same for right side
         currSliceBorderR = getSliceBorder (hipsSegSlice, original_vol_slice, ...
             padded_R(:,:,sliceNum), flipped_L(:,:,sliceNum), sliceNum, 'R');
+        if(currSliceBorderR == null)
+            return
+        end
         newBorderR(:,:,sliceNum) = currSliceBorderR;
     end
     
@@ -92,7 +98,10 @@ function [padded_roi, d] = getShortestPathForBorderSlice(borderSegSlice,...
 %         [t_intensity_geomean, ~] = geomean(t_intensities(:).');
 %         avg_intensity_sink_source = (s_intensity_geomean + t_intensity_geomean)/2;
         avg_intensity_sink_source = mean(mean(s_intensities)+mean(t_intensities));
-        [sliceGraph, ~] = getSliceGraph(roi, avg_intensity_sink_source);
+        [sliceGraph] = getSliceGraph(roi, avg_intensity_sink_source);
+        if(sliceGraph == null)
+            return
+        end
         
         % edit graph: create super-nodes for s and t
         newSliceGraph = createSinkSourceSuperNodes( sliceGraph, ...
@@ -137,6 +146,9 @@ function [ sliceBorder ] = getSliceBorder (hipsSegSlice, ...
         hipsSegSlice, original_vol_slice, sliceNum, side, 1);
     [padded_roi_2, path_2_d] = getShortestPathForBorderSlice(border_slice_2, ...
         hipsSegSlice, original_vol_slice, sliceNum, side, 2);
+    if(~padded_roi_1 || ~padded_roi_2)
+        return
+    end
     if ((path_1_d ~= 0) && (path_1_d < path_2_d))
         % path_1 is better
         sliceBorder = padded_roi_1;

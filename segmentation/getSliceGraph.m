@@ -1,17 +1,18 @@
-function [ G, adj ] = getSliceGraph(slice, avg_intensity_sink_source)
+function [ G ] = getSliceGraph(slice, avg_intensity_sink_source)
 % GETSLICEGRAPH creates a neighbors matrix and then creates a directed 
 % graph object from it.
 %   in every cell (i,j) in the adjacency matrix, there is the weight of 
 %   the edge between them, when i and j are linear indices originating in
 %   the slice image.
 %   the weight is: 1 - exp(-(I(i)-I(j))^2/2sigma^2)
-%   based on 4-connectivity
+%   based on 8-connectivity
 
     % getting the size of the image
     [ r, c ] = size(slice);
     dim = r*c; % we will work with linear indexing
     
     % creating a square zero matrix - will be filled with weights
+    clear adj;
     adj = zeros(dim, dim);
     
     
@@ -38,10 +39,10 @@ function [ G, adj ] = getSliceGraph(slice, avg_intensity_sink_source)
     adj = sparse(adj ./ max(adj(:)));
     nans = isnan(adj);
     if(sum(nans(:)) > 0)
-        [row, col] = find(isnan(adj));
-        display(['row:' num2str(row) ' col:' num2str(col)])
+%         [row, col] = find(isnan(adj));
+%         display('rows:'); display(row); display('col:'); display(col);
+        G = null;
+        return
     end
     G = digraph(adj);
-%     plot(G);
-%     G = adj;
 end

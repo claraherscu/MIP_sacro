@@ -7,7 +7,7 @@ basefolder = 'D://MIP_sacro/sacro/dataset/';
 
 %% creating train set
 all_images_lines = [];
-for i = 1:8%numel(data)
+for i = 1%:8%numel(data)
     s_t_seg_file = [basefolder, data{i}.accessNum, '/s_t_seg.nii.gz'];
     if (exist(s_t_seg_file, 'file'))
         % getting original volume
@@ -22,7 +22,37 @@ for i = 1:8%numel(data)
         s_t_seg = niiStruct.img;
         
         % getting gradient images
-        [Gx,Gy,Gz] = imgradientxyz(original_vol);
+        [Gx, ~, ~] = imgradientxyz(original_vol);
+        
+        % creating indices array
+        indices = transpose(1:size(original_vol(:)));
+        indices = reshape(indices, size(original_vol, 1), size(original_vol, 2), size(original_vol, 3));
+        
+        % which slices do we need?
+        sum_of_slices = zeros(size(s_t_seg,3),1);
+        for z = 1:size(sum_of_slices,1)
+            slice = s_t_seg(:,:,z);
+            sum_of_slices(z) = sum(slice(:));
+        end
+        first_slice = find(sum_of_slices, 1, 'first');
+        last_slice = find(sum_of_slices, 1, 'last');
+        
+        % get the bBox of the pelvis to avoid redundant voxels
+        hipsSegPath = [original_img_path '/hipsSeg.mat'];
+        load(hipsSegPath);
+        stats = regionprops(hipsSeg, 'BoundingBox');
+        first_x = ceil(stats.BoundingBox(1)); 
+        last_x = ceil(stats.BoundingBox(1))+ceil(stats.BoundingBox(4)); 
+        first_y = ceil(stats.BoundingBox(2)); 
+        last_y = ceil(stats.BoundingBox(2))+ceil(stats.BoundingBox(5)); 
+        first_z = ceil(stats.BoundingBox(3)); 
+        last_z = ceil(stats.BoundingBox(3))+ceil(stats.BoundingBox(6)); 
+        
+        % cropping
+        original_vol = original_vol(first_x:last_x,first_y:last_y,first_slice:last_slice);
+        s_t_seg = s_t_seg(first_x:last_x,first_y:last_y,first_slice:last_slice);
+        Gx = Gx(first_x:last_x,first_y:last_y,first_slice:last_slice);
+        indices = indices(first_x:last_x,first_y:last_y,first_slice:last_slice);
         
         % adding to train set: creating line for every voxel
         if ~(eq(size(Gx(:),1), size(original_vol(:),1)) && ...
@@ -32,10 +62,11 @@ for i = 1:8%numel(data)
             display('dimensions problem!');
             continue;
         end
-        img_line_rep = [original_vol(:), Gx(:), Gy(:), transpose(1:size(original_vol(:))), s_t_seg(:)];
+        img_line_rep = [original_vol(:), Gx(:), indices(:), s_t_seg(:)];
         all_images_lines = [all_images_lines; img_line_rep];
     end
 end
 
 %% training
-forest = TreeBagger(10, all_images_lines(:, 1:4), all_images_lines(:, 5));
+forest = TreeBagger(50, single(all_images_lines(:, 1:3)), all_images_lines(:, 4), ...
+    'Method', 'classification');

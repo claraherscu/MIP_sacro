@@ -20,7 +20,7 @@ pelvisSegFailures = {'4015004853476', '4015004843912', '4015006627185', ...
     '4015005421901', '4015005365594'};
 
 simmetricBorder = ones(numel(data));
-for i = 1%:70%73:100%:numel(data)
+for i = 1:70%73:100%:numel(data)
     d = data{i};
     
     % currently working only on successful segs
@@ -59,8 +59,8 @@ for i = 1%:70%73:100%:numel(data)
             saveBorderSeg(segBorder.L, segBorder.R, [basefolder d.accessNum], 'segBorderEqualized');
             
             % get Bbox
-            [l_point1, l_point2, l_point3, l_point4, l_pelvis_start, l_pelvis_end] = getBBoxAroundJoint (segBorder.L, pixelSz, 'left');
-            [r_point1, r_point2, r_point3, r_point4, r_pelvis_start, r_pelvis_end] = getBBoxAroundJoint (segBorder.R, pixelSz, 'right');
+            [l_point1, l_point2, l_point3, l_point4, l_pelvis_start, l_pelvis_end] = getBBoxAroundJoint (segBorder.L, pixelSz);
+            [r_point1, r_point2, r_point3, r_point4, r_pelvis_start, r_pelvis_end] = getBBoxAroundJoint (segBorder.R, pixelSz);
             
             l_point1(2) = size(segBorder.L,2) - l_point1(2);
             l_point2(2) = size(segBorder.L,2) - l_point2(2);
@@ -72,14 +72,16 @@ for i = 1%:70%73:100%:numel(data)
             r_point4(2) = size(segBorder.L,2) - r_point4(2);
             
             pelvis_start = min(l_pelvis_start, r_pelvis_start);
-            pelvis_end = max(l_pelvis_end, r_pelvis_end);
+            pelvis_end = 
             
             % write to txt file
             txtfilename = [basefolder d.accessNum '/' d.accessNum];
-            format = '%d %d \n%d %d \n%d %d \n%d %d \n\n%d %d \n%d %d \n%d %d \n%d %d\n\n%d %d';
+            format = '%d %d %d \n%d %d %d \n%d %d %d \n%d %d %d';
             f = fopen([txtfilename '.txt'], 'wt');
-            fprintf(f, format, l_point1(1), l_point1(2), l_point2(1), l_point2(2), l_point3(1), l_point3(2), l_point4(1), l_point4(2), ...
-                r_point1(1), r_point1(2), r_point2(1), r_point2(2), r_point3(1), r_point3(2), r_point4(1), r_point4(2), pelvis_start, pelvis_end);
+            fprintf(f, format, left_UL(1), left_UL(2), left_UL(3), ...
+                left_LR(1), left_LR(2), left_LR(3), ...
+                right_UL(1), right_UL(2), right_UL(3), ...
+                right_LR(1), right_LR(2), right_LR(3));
 
 %             % check if the border is simmetric
 %             hipsSegPath = [basefolder data{i}.accessNum '/hipsSeg.mat'];

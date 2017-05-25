@@ -37,8 +37,8 @@ function [ isSimmetricBorder ] = isSimmetricBorder ( hipsSeg, segBorder, pixelSz
     end
     
     % if the maximal distance over all slices is big, we will return 'not
-    % simmetric'. (big means > 2 cm)
-    max_allowed_dist = ceil(20/pixelSz);
+    % simmetric'. (big means > 3.5 cm)
+    max_allowed_dist = ceil(35/pixelSz);
     max_x_distances = max(max_x_distances_per_slice);
     display(max_x_distances);
     if (max_x_distances > max_allowed_dist)
