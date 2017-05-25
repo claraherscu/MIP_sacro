@@ -20,7 +20,8 @@ pelvisSegFailures = {'4015004853476', '4015004843912', '4015006627185', ...
     '4015005421901', '4015005365594'};
 
 simmetricBorder = ones(numel(data));
-for i = 1%:70%73:100%:numel(data)
+
+for i = 71:72%:numel(data)
     d = data{i};
     
     % currently working only on successful segs
@@ -71,15 +72,16 @@ for i = 1%:70%73:100%:numel(data)
             r_point3(2) = size(segBorder.L,2) - r_point3(2);
             r_point4(2) = size(segBorder.L,2) - r_point4(2);
             
-            pelvis_start = min(l_pelvis_start, r_pelvis_start);
-            pelvis_end = max(l_pelvis_end, r_pelvis_end);
+            pelvis_start = max(l_pelvis_start, r_pelvis_start);
+            pelvis_end = min(l_pelvis_end, r_pelvis_end);
             
             % write to txt file
-            txtfilename = [basefolder d.accessNum '/' d.accessNum];
+            txtfilename = [basefolder 'bboxes_new/' d.accessNum];
             format = '%d %d \n%d %d \n%d %d \n%d %d \n\n%d %d \n%d %d \n%d %d \n%d %d\n\n%d %d';
             f = fopen([txtfilename '.txt'], 'wt');
             fprintf(f, format, l_point1(1), l_point1(2), l_point2(1), l_point2(2), l_point3(1), l_point3(2), l_point4(1), l_point4(2), ...
                 r_point1(1), r_point1(2), r_point2(1), r_point2(2), r_point3(1), r_point3(2), r_point4(1), r_point4(2), pelvis_start, pelvis_end);
+            fclose(f);
 
 %             % check if the border is simmetric
 %             hipsSegPath = [basefolder data{i}.accessNum '/hipsSeg.mat'];

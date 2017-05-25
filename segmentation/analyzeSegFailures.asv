@@ -81,13 +81,10 @@ ylabel('Number of Samples');
 display(mean(pelvisFailGrades));
 
 figure;
-histogram(categorical(borderFailGrades, [0, 1, 2, 3, 4]));
-title('Failure of border segmentation');
-xlabel('Grade');
-ylabel('Number of Samples');
+histogram(categorical(borderFailGrades./132, [0, 1, 2, 3, 4]));
 figure;
-histogram(categorical(borderSuccessGrades, [0, 1, 2, 3, 4]));
-title('Success of border segmentation');
+histogram(categorical(borderSuccessGrades./132, [0, 1, 2, 3, 4]));
+title('Failure of border segmentation by grade');
 xlabel('Grade');
 ylabel('Number of Samples');
 
