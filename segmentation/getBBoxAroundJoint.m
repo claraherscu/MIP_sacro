@@ -1,9 +1,9 @@
 function [point1, point2, point3, point4, pelvis_start, pelvis_end] = getBBoxAroundJoint (border_seg, pixelSz, side)
 % getBBoxAroundJoint extracts a bounding box around the sacroiliac joint
 % based on the given segmentation of the joint
-%   outputs: UL, LR - UpperLeft and LowerRight corners of the (3-d) bBox 
+%   outputs: 4 points describing the box, start slice and end slice
 
-    %% use PCA to find the orientation of the bBox
+    %% use regression to find the orientation of the bBox
     % collect all points that belong to the joint according to the seg.
     all_points = [];
     for slice_num = 1:size(border_seg, 3)
@@ -64,6 +64,16 @@ function [point1, point2, point3, point4, pelvis_start, pelvis_end] = getBBoxAro
         point3 = floor(minPoint + [0.5*wanted_distance, perp_slope*wanted_distance]);
         point4 = floor(minPoint + [-0.5*wanted_distance, -perp_slope*wanted_distance]);
     end
+    
+    % make sure we are not out of bounds
+    point1(1) = max(min(point1(1),size(border_seg,1)),1);
+    point2(1) = max(min(point2(1),size(border_seg,1)),1);
+    point3(1) = max(min(point3(1),size(border_seg,1)),1);
+    point4(1) = max(min(point4(1),size(border_seg,1)),1);
+    point1(2) = max(min(point1(2),size(border_seg,2)),1);
+    point2(2) = max(min(point2(2),size(border_seg,2)),1);
+    point3(2) = max(min(point3(2),size(border_seg,2)),1);
+    point4(2) = max(min(point4(2),size(border_seg,2)),1);
 end
 
 

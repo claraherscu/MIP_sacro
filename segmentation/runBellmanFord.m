@@ -29,14 +29,16 @@ function [ newBorderSeg ] = runBellmanFord ( borderSeg, hipsSeg, original_vol )
         % left side
         currSliceBorderL = getSliceBorder (hipsSegSlice, original_vol_slice, ...
             padded_L(:,:,sliceNum), flipped_R(:,:,sliceNum), sliceNum, 'L');
-        if(currSliceBorderL == null)
+        if(isempty(currSliceBorderL))
+            newBorderSeg = [];
             return
         end
         newBorderL(:,:,sliceNum) = currSliceBorderL;
         % same for right side
         currSliceBorderR = getSliceBorder (hipsSegSlice, original_vol_slice, ...
             padded_R(:,:,sliceNum), flipped_L(:,:,sliceNum), sliceNum, 'R');
-        if(currSliceBorderR == null)
+        if(isempty(currSliceBorderR))
+            newBorderSeg = [];
             return
         end
         newBorderR(:,:,sliceNum) = currSliceBorderR;
@@ -99,7 +101,8 @@ function [padded_roi, d] = getShortestPathForBorderSlice(borderSegSlice,...
 %         avg_intensity_sink_source = (s_intensity_geomean + t_intensity_geomean)/2;
         avg_intensity_sink_source = mean(mean(s_intensities)+mean(t_intensities));
         [sliceGraph] = getSliceGraph(roi, avg_intensity_sink_source);
-        if(sliceGraph == null)
+        if(isempty(sliceGraph))
+            padded_roi = []; d = [];
             return
         end
         
@@ -146,7 +149,8 @@ function [ sliceBorder ] = getSliceBorder (hipsSegSlice, ...
         hipsSegSlice, original_vol_slice, sliceNum, side, 1);
     [padded_roi_2, path_2_d] = getShortestPathForBorderSlice(border_slice_2, ...
         hipsSegSlice, original_vol_slice, sliceNum, side, 2);
-    if(~padded_roi_1 || ~padded_roi_2)
+    if(isempty(padded_roi_1) || isempty(padded_roi_2))
+        sliceBorder = [];
         return
     end
     if ((path_1_d ~= 0) && (path_1_d < path_2_d))

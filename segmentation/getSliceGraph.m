@@ -41,7 +41,7 @@ function [ G ] = getSliceGraph(slice, avg_intensity_sink_source)
     if(sum(nans(:)) > 0)
 %         [row, col] = find(isnan(adj));
 %         display('rows:'); display(row); display('col:'); display(col);
-        G = null;
+        G = [];
         return
     end
     G = digraph(adj);

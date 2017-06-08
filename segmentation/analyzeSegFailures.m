@@ -25,7 +25,7 @@ borderSuccessGrades = [];
 failGrades = zeros(5,1);
 totalGrades = zeros(5,1);
 
-for i = 1:132
+for i = 1:150
     d = data{i};
     currAccessNum = d.accessNum;
     totalGrades(d.Rt + 1) =  totalGrades(d.Rt + 1) + 1;
@@ -67,6 +67,7 @@ for i = 1:132
         continue;
     end
     
+    display(['d.accessNum ' d.accessNum]);
     borderSuccessGrades(end + 1) = d.Rt;
     borderSuccessGrades(end + 1) = d.Lt;
 end
@@ -95,6 +96,9 @@ display(mean(borderFailGrades)); display(mean(borderSuccessGrades));
 
 percentageFails = failGrades ./ totalGrades;
 display(percentageFails);
+percentageSuccess = 1 - percentageFails;
+display(percentageSuccess);
+display(totalGrades - failGrades);
 
-display(['overall fail rate: ' num2str(mean(percentageFails))]);
-display(['fail rate excluding grade 4 patients: ' num2str(mean(percentageFails(1:4)))]);
+display(['overall success rate: ' num2str(1 - sum(failGrades)/300)]);
+display(['success rate excluding grade 4 patients: ' num2str(1 - sum(failGrades(1:4))/300)]);
