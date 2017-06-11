@@ -1,6 +1,6 @@
-function [ ] = getBBoxPerSlice (border_seg, pixelSz, side, fd)
+function [ ] = getBBoxPerSlice (border_seg, pixelSz, side, fd, filename)
 % getBBoxPerSlice extracts a bounding box around the sacroiliac joint on
-% every slice where a segmentation exists
+% every slice where a segmentation exists. only write to log file if we are in debug mode
 %   inputs: border_seg = seg image of single side (ex.: segBorder.L);
 %           pixelSz = the size of a pixel, to calculate sizes correctly
 %           side = 'left' or 'right', needed for orientation calculations
@@ -13,8 +13,8 @@ function [ ] = getBBoxPerSlice (border_seg, pixelSz, side, fd)
     [pelvis_start, pelvis_end] = getStartEnd(border_seg);
 
     % format to write to file
-    fprintf(fd, [side '\n']);
-    format = '%d : (%d %d) (%d %d) (%d %d) (%d %d) \n';
+    coords_format = [filename ' coords %d ' side ' : (%d %d) (%d %d) (%d %d) (%d %d) \n'];
+    slope_format = [filename ' slope %d ' side ' : %d \n'];
     
     % constants for the window
     w = 10/pixelSz; % 3.5 mm
@@ -83,8 +83,19 @@ function [ ] = getBBoxPerSlice (border_seg, pixelSz, side, fd)
         BL = floor(bottom + (w * u)); % BL = (x0,y0) + d*u -> direction of x1 
         
         % make sure we're not out of bounds
+        TL(1) = max(min(TL(1),size(border_seg,1)),1);
+        TR(1) = max(min(TR(1),size(border_seg,1)),1);
+        BR(1) = max(min(BR(1),size(border_seg,1)),1);
+        BL(1) = max(min(BL(1),size(border_seg,1)),1);
+        TL(2) = max(min(TL(2),size(border_seg,2)),1);
+        TR(2) = max(min(TR(2),size(border_seg,2)),1);
+        BR(2) = max(min(BR(2),size(border_seg,2)),1);
+        BL(2) = max(min(BL(2),size(border_seg,2)),1);
+        
+        % write polynom slope to file
+        fprintf(fd, slope_format, sliceNum, curr_slice_poly(1));
         
         % write [TL, BR, sliceNum] to file
-        fprintf(fd, format, sliceNum, TL(1), TL(2), TR(1), TR(2), BR(1), BR(2), BL(1), BL(2));
+        fprintf(fd, coords_format, sliceNum, TL(1), TL(2), TR(1), TR(2), BR(1), BR(2), BL(1), BL(2));
     end
 end
