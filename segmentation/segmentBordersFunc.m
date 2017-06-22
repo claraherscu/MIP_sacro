@@ -96,44 +96,54 @@ function [] = segmentBordersFunc(basefolder, data, start_index, end_index, DEBUG
                 saveBorderSeg(segBorder.L, segBorder.R, [basefolder d.accessNum], 'segBorderEqualized');
 
                 % check if the border is simmetric
-                hipsSegPath = [basefolder data{i}.accessNum '/hipsSeg.mat'];
-                load(hipsSegPath)
-                isSimmetric = isSimmetricBorder(segBorder, pixelSz);
+%                 hipsSegPath = [basefolder data{i}.accessNum '/hipsSeg.mat'];
+%                 load(hipsSegPath)
+%                 isSimmetric = isSimmetricBorder(hipsSeg, segBorder, pixelSz);
                 
                 % if needed, writing to file
-                if (WRITE_TO_FILE)
-                    algorithm_format = [d.accessNum ' algorithm : '];
-                    if(isSimmetric)
-                        fprintf(f, [algorithm_format 'Min-Cut\n']);
-                    else
-                        fprintf(f, [algorithm_format 'Bellman-Ford\n']);
-                    end
-                end
+%                 if (WRITE_TO_FILE)
+%                     algorithm_format = [d.accessNum ' algorithm : '];
+%                     if(isSimmetric)
+%                         fprintf(f, [algorithm_format 'Min-Cut\n']);
+%                     else
+%                         fprintf(f, [algorithm_format 'Bellman-Ford\n']);
+%                     end
+%                 end
+                
+                
+                % can't do this on this computer because digraph was
+                % introduced only on MatLab 2015!!
                 
                 % if not simmetric, segmenting border again using bellman-ford
-                if(~isSimmetric)
-                    simmetricBorder(i) = 0;
-                    display('border is not simmetric');
-                    equalized_img_path = [basefolder, data{i}.accessNum, '/pelvis_equalized.nii.gz'];
-                    new_equalized_img_path = strrep(equalized_img_path, '/', '\');
-                    equalized_struct = load_untouch_nii_gzip(new_equalized_img_path);
-                    equalized_vol = equalized_struct.img;
-                    newSegBorder = runBellmanFord(segBorder, hipsSeg, equalized_vol);
-                    if(~isempty(newSegBorder))
-                        saveBorderSeg(newSegBorder.L, newSegBorder.R, [basefolder d.accessNum], 'segBorderBellmanFordEqualized');
-                        outfile = [basefolder, d.accessNum, '/segBorderBellmanFordEqualized'];
-                        save(outfile, 'newSegBorder', 'info', 'newSegBorder');
-                    end
-                    segBorder = newSegBorder;
-                else
-                    display('border is simmetric');
+%                 if(~isSimmetric)
+%                     simmetricBorder(i) = 0;
+%                     display('border is not simmetric');
+%                     equalized_img_path = [basefolder, data{i}.accessNum, '/pelvis_equalized.nii.gz'];
+%                     equalized_struct = load_untouch_nii_gzip(equalized_img_path);
+%                     equalized_vol = equalized_struct.img;
+%                     newSegBorder = runBellmanFord(segBorder, hipsSeg, equalized_vol);
+%                     if(~isempty(newSegBorder))
+%                         saveBorderSeg(newSegBorder.L, newSegBorder.R, [basefolder d.accessNum], 'segBorderBellmanFordEqualized');
+%                         outfile = [basefolder, d.accessNum, '/segBorderBellmanFordEqualized'];
+%                         save(outfile, 'newSegBorder', 'info', 'newSegBorder');
+%                     end
+%                     segBorder = newSegBorder;
+%                 else
+%                     display('border is simmetric');
+%                 end
+
+%                 % get Bboxes & write to log file
+%                 if (WRITE_TO_FILE)
+%                     getBBoxPerSlice (segBorder.L, pixelSz, 'left', f, d.accessNum);
+%                     getBBoxPerSlice (segBorder.R, pixelSz, 'right', f, d.accessNum);
+%                 end
+
+                % get big Bboxes & write to log file
+                if (WRITE_TO_FILE)
+                    getBBoxAroundJoint (segBorder.L, pixelSz, 'left', f, d.accessNum);
+                    getBBoxAroundJoint (segBorder.R, pixelSz, 'right', f, d.accessNum);
                 end
 
-                % get Bboxes & write to log file
-                if (WRITE_TO_FILE)
-                    getBBoxPerSlice (segBorder.L, pixelSz, 'left', f, d.accessNum);
-                    getBBoxPerSlice (segBorder.R, pixelSz, 'right', f, d.accessNum);
-                end
             end
         end
     end

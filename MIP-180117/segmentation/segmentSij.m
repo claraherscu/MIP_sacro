@@ -15,9 +15,13 @@ slices = size(vol,3); display(slices);
 vol = dicom2niftiVol(vol, dicomInfo);
 bonesSeg = getBones(vol, 0);
 hipsSeg = getHips(bonesSeg, 0, vol); clearvars bonesSeg;
+
+% saving hips segmentation for later
+hipsSegPath = [fPath '/hipsSeg.mat'];
+save(hipsSegPath, 'hipsSeg'); 
+
 [segR, cutR] = minCutHips(vol, dicomInfo, hipsSeg, 'right', 10);
 [segL, cutL] = minCutHips(vol, dicomInfo, hipsSeg, 'left', 10);
-
 if exist('outfile','var')
     close all;
     try
@@ -35,6 +39,7 @@ noise = getNoiseValue(vol);
 saveSeg ( segL, segR, fPath, 'seg' );
 seg.L = segL;
 seg.R = segR;
+
 end
 
 

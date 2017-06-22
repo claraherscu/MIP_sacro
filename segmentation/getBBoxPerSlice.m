@@ -17,7 +17,7 @@ function [ ] = getBBoxPerSlice (border_seg, pixelSz, side, fd, filename)
     slope_format = [filename ' slope %d ' side ' : %d \n'];
     
     % constants for the window
-    w = 10/pixelSz; % 3.5 mm
+    w = 10/pixelSz; % 5 mm
     l = 35/pixelSz; % 35 mm
     
     degree = 1;
@@ -95,7 +95,7 @@ function [ ] = getBBoxPerSlice (border_seg, pixelSz, side, fd, filename)
         % write polynom slope to file
         fprintf(fd, slope_format, sliceNum, curr_slice_poly(1));
         
-        % write [TL, BR, sliceNum] to file
+        % write [TL, TR, BR, BL, sliceNum] to file
         fprintf(fd, coords_format, sliceNum, TL(1), TL(2), TR(1), TR(2), BR(1), BR(2), BL(1), BL(2));
     end
 end

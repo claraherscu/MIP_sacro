@@ -1,5 +1,5 @@
 load matlabData;
-basefolder = 'D://MIP_sacro/sacro/dataset/';
+basefolder = '/dataset/';
 dataWithCanny = data;
 for i =157%:160%:numel(dataWithCanny)
     fPath = [basefolder, dataWithCanny{i}.accessNum];

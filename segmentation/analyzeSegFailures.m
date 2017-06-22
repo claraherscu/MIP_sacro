@@ -70,7 +70,7 @@ for i = 1:numel(data)
         continue;
     end
     
-    display(['d.accessNum ' d.accessNum]);
+%     display(['d.accessNum ' d.accessNum]);
     borderSuccessGrades(end + 1) = d.Rt;
     borderSuccessGrades(end + 1) = d.Lt;
 end
@@ -82,7 +82,7 @@ end
 % xlabel('Grade');
 % ylabel('Number of Samples');
 
-display(mean(pelvisFailGrades));
+% display(mean(pelvisFailGrades));
 
 figure;
 histogram(borderFailGrades, [0, 1, 2, 3, 4]);
@@ -95,7 +95,7 @@ title('Success of border segmentation');
 xlabel('Grade');
 ylabel('Number of Samples');
 
-display(mean(borderFailGrades)); display(mean(borderSuccessGrades));
+% display(mean(borderFailGrades)); display(mean(borderSuccessGrades));
 
 percentageFails = failGrades ./ totalGrades;
 display(percentageFails);
@@ -103,5 +103,5 @@ percentageSuccess = 1 - percentageFails;
 display(percentageSuccess);
 display(totalGrades - failGrades);
 
-display(['overall success rate: ' num2str(1 - sum(failGrades)/508)]);
-display(['success rate excluding grade 4 patients: ' num2str(1 - sum(failGrades(1:4))/508)]);
+display(['overall success rate: ' num2str(1 - sum(failGrades)/(2*(numel(data) - numel(pelvisSegFailures))))]);
+display(['success rate excluding grade 4 patients: ' num2str(1 - sum(failGrades(1:4))/(2*(numel(data) - numel(pelvisSegFailures))))]);

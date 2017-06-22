@@ -1,7 +1,10 @@
-function [point1, point2, point3, point4, pelvis_start, pelvis_end] = getBBoxAroundJoint (border_seg, pixelSz, side)
+function [] = getBBoxAroundJoint (border_seg, pixelSz, side, fd, filename)
 % getBBoxAroundJoint extracts a bounding box around the sacroiliac joint
 % based on the given segmentation of the joint
-%   outputs: 4 points describing the box, start slice and end slice
+%   inputs: border_seg = seg image of single side (ex.: segBorder.L);
+%           pixelSz = the size of a pixel, to calculate sizes correctly
+%           side = 'left' or 'right', needed for orientation calculations
+%           fd = a file already open for writing the results into
 
     %% use regression to find the orientation of the bBox
     % collect all points that belong to the joint according to the seg.
@@ -13,6 +16,11 @@ function [point1, point2, point3, point4, pelvis_start, pelvis_end] = getBBoxAro
     end
     
     [pelvis_start, pelvis_end] = getStartEnd(border_seg);
+    
+    % format to write to file
+    coords_format = [filename ' coords ' side ' : (%d %d) (%d %d) (%d %d) (%d %d) \n'];
+    slope_format = [filename ' slope ' side ' : %d \n'];
+    start_end_format = [filename ' pelvis_start : %d  pelvis_end : %d\n'];
     
     % use polyfit to find orientation
     degree = 1;
@@ -34,10 +42,7 @@ function [point1, point2, point3, point4, pelvis_start, pelvis_end] = getBBoxAro
     % take two points farthest from each other, under a distance threshold
     thresh = 1;
     under_thresh = find(distances < thresh);
-%     while (isempty(under_thresh))
-%         thresh = thresh + 1;
-%         under_thresh = find(distances < thresh);
-%     end
+
     [~, minIdx] = min(all_points(under_thresh,1));
     [~, maxIdx] = max(all_points(under_thresh,1));
     
@@ -46,7 +51,6 @@ function [point1, point2, point3, point4, pelvis_start, pelvis_end] = getBBoxAro
     perp_slope = -1/original_slope; % perpendicular slope is -1/slope
     
     % calculate the bBox bounds
-%     pixelSz = info.score(1,end-3);
     wanted_distance = ceil(30/pixelSz); % we want ~3cm in each direction
 
     if(strcmp(side, 'left'))
@@ -74,6 +78,16 @@ function [point1, point2, point3, point4, pelvis_start, pelvis_end] = getBBoxAro
     point2(2) = max(min(point2(2),size(border_seg,2)),1);
     point3(2) = max(min(point3(2),size(border_seg,2)),1);
     point4(2) = max(min(point4(2),size(border_seg,2)),1);
+    
+    % write polynom slope to file
+    fprintf(fd, slope_format, original_slope);
+
+    % write [TL, TR, BR, BL] to file
+    fprintf(fd, coords_format, point1(1), point1(2), point2(1), point2(2), point3(1), point3(2), point4(1), point4(2));
+    
+    % write pelvis start+end
+    fprintf(fd, start_end_format, pelvis_start, pelvis_end);
+    
 end
 
 
