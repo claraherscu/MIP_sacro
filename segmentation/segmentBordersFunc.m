@@ -21,7 +21,6 @@ function [] = segmentBordersFunc(basefolder, data, start_index, end_index, DEBUG
     simmetricBorder = ones(numel(data));
 
     WRITE_TO_FILE = 0;
-    SUCCESSFUL = 1;
     
     % writing to log
     if(DEBUG_FLAG)
@@ -44,37 +43,40 @@ function [] = segmentBordersFunc(basefolder, data, start_index, end_index, DEBUG
     for i = start_index:end_index
         d = data{i};
         display(['i:' num2str(i)]);
+        SUCCESSFUL_LEFT = 1;
+        SUCCESSFUL_RIGHT = 1;
 
         % failed pelvis segmentations have nothing to do anyway -- skipping
         isPelvisFailure = find(strcmp(pelvisSegFailures, d.accessNum));
         if(isPelvisFailure)
-            SUCCESSFUL = 0;
+            SUCCESSFUL_LEFT = 0;
+            SUCCESSFUL_RIGHT = 0;
             continue;
         end
         
-        if(SUCCESSFUL_ONLY_FLAG)
-            % currently working only on successful segs
-            isBorderFailure = find(strcmp(borderSegFailures, d.accessNum));
-            if(isBorderFailure)
-                SUCCESSFUL = 0;
-                continue;
-            end
-            isLeftBorderFailure = find(strcmp(borderSegFailLt, d.accessNum));
-            if(isLeftBorderFailure)
-                SUCCESSFUL = 0;
-                continue;
-            end
-            isRightBorderFailure = find(strcmp(borderSegFailRt, d.accessNum));
-            if(isRightBorderFailure)
-                SUCCESSFUL = 0;
-                continue;
-            end
+        isBorderFailure = find(strcmp(borderSegFailures, d.accessNum));
+        if(isBorderFailure)
+            SUCCESSFUL_LEFT = 0;
+            SUCCESSFUL_RIGHT = 0;
+            continue;
+        end
+        isLeftBorderFailure = find(strcmp(borderSegFailLt, d.accessNum));
+        if(isLeftBorderFailure)
+            SUCCESSFUL_LEFT = 0;
+            continue;
+        end
+        isRightBorderFailure = find(strcmp(borderSegFailRt, d.accessNum));
+        if(isRightBorderFailure)
+            SUCCESSFUL_RIGHT = 0;
+            continue;
         end
         
         % if needed, writing to log
         if (WRITE_TO_FILE)
-            succ_format = [d.accessNum ' binary success : %d \n'];
-            fprintf(f, succ_format, SUCCESSFUL);
+            succ_format = [d.accessNum ' binary success left : %d \n'];
+            fprintf(f, succ_format, SUCCESSFUL_LEFT);
+            succ_format = [d.accessNum ' binary success right : %d \n'];
+            fprintf(f, succ_format, SUCCESSFUL_RIGHT);
             grade_format = [d.accessNum ' grade left : %d \n' d.accessNum ' grade right : %d \n'];
             fprintf(f, grade_format, d.Lt, d.Rt);
         end
@@ -86,21 +88,26 @@ function [] = segmentBordersFunc(basefolder, data, start_index, end_index, DEBUG
             load(segfile)
             if exist('seg','var')               
                 disp(d.accessNum);
+                
                 pixelSz = info.score(1,end-3);
                 pixelZSz = info.score(1,end-2);
-                segBorder = segmentRelevantBorders(seg,pixelSz,pixelZSz);
+%                 segBorder = segmentRelevantBorders(seg,pixelSz,pixelZSz);
+% 
+%                 % save border
+%                 outfile = [basefolder, d.accessNum, '/segBorderEqualized'];
+%                 save(outfile, 'segBorder', 'info', 'segBorder');
+%                 saveBorderSeg(segBorder.L, segBorder.R, [basefolder d.accessNum], 'segBorderEqualized');
 
-                % save border
-                outfile = [basefolder, d.accessNum, '/segBorderEqualized'];
-                save(outfile, 'segBorder', 'info', 'segBorder');
-                saveBorderSeg(segBorder.L, segBorder.R, [basefolder d.accessNum], 'segBorderEqualized');
+                segBorderFile = [basefolder, d.accessNum, '/segBorderEqualized.mat'];
+                load(segBorderFile);
 
                 % check if the border is simmetric
-%                 hipsSegPath = [basefolder data{i}.accessNum '/hipsSeg.mat'];
-%                 load(hipsSegPath)
-%                 isSimmetric = isSimmetricBorder(hipsSeg, segBorder, pixelSz);
+                hipsSegPath = [basefolder data{i}.accessNum '/hipsSeg.mat'];
+                load(hipsSegPath)
+                isSimmetric = isSimmetricBorder(hipsSeg, segBorder, pixelSz);
+                display(isSimmetric)
                 
-                % if needed, writing to file
+%                 % if needed, writing to file
 %                 if (WRITE_TO_FILE)
 %                     algorithm_format = [d.accessNum ' algorithm : '];
 %                     if(isSimmetric)
@@ -110,7 +117,7 @@ function [] = segmentBordersFunc(basefolder, data, start_index, end_index, DEBUG
 %                     end
 %                 end
                 
-                
+
                 % can't do this on this computer because digraph was
                 % introduced only on MatLab 2015!!
                 
@@ -127,22 +134,34 @@ function [] = segmentBordersFunc(basefolder, data, start_index, end_index, DEBUG
 %                         outfile = [basefolder, d.accessNum, '/segBorderBellmanFordEqualized'];
 %                         save(outfile, 'newSegBorder', 'info', 'newSegBorder');
 %                     end
-%                     segBorder = newSegBorder;
-%                 else
-%                     display('border is simmetric');
-%                 end
-
-%                 % get Bboxes & write to log file
-%                 if (WRITE_TO_FILE)
-%                     getBBoxPerSlice (segBorder.L, pixelSz, 'left', f, d.accessNum);
-%                     getBBoxPerSlice (segBorder.R, pixelSz, 'right', f, d.accessNum);
-%                 end
-
-                % get big Bboxes & write to log file
-                if (WRITE_TO_FILE)
-                    getBBoxAroundJoint (segBorder.L, pixelSz, 'left', f, d.accessNum);
-                    getBBoxAroundJoint (segBorder.R, pixelSz, 'right', f, d.accessNum);
+                segBorderFile = [basefolder, d.accessNum, '/segBorderBellmanFordEqualized.mat'];
+                if(exist(segBorderFile,'file'))
+                    load(segBorderFile);
+                    segBorder = newSegBorder;
+                    % if needed, writing to file
+                    if (WRITE_TO_FILE)
+                        algorithm_format = [d.accessNum ' algorithm : '];
+                        fprintf(f, [algorithm_format 'Bellman-Ford\n']);
+                    end
+                else
+                    display('border is simmetric');
+                    if (WRITE_TO_FILE)
+                        algorithm_format = [d.accessNum ' algorithm : '];
+                        fprintf(f, [algorithm_format 'Min-Cut\n']);
+                    end
                 end
+
+                % get Bboxes & write to log file
+                if (WRITE_TO_FILE)
+                    getBBoxPerSlice (segBorder.L, pixelSz, 'left', f, d.accessNum);
+                    getBBoxPerSlice (segBorder.R, pixelSz, 'right', f, d.accessNum);
+                end
+
+%                 % get big Bboxes & write to log file
+%                 if (WRITE_TO_FILE)
+%                     getBBoxAroundJoint (segBorder.L, pixelSz, 'left', f, d.accessNum);
+%                     getBBoxAroundJoint (segBorder.R, pixelSz, 'right', f, d.accessNum);
+%                 end
 
             end
         end

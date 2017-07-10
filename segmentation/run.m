@@ -5,13 +5,12 @@ SUCCESSFUL_ONLY_FLAG = 0; % will only extract borders for successful segmentatio
 
 load matlabData;
 basefolder = '/cs/casmip/clara.herscu/git/MIP_sacro/dataset/';
-% basefolder = '/cs/casmip/clara.herscu/MIP_sacro-master/dataset/';
 
 % run segmentation
 if(SEGMENTATION_FLAG)
-    runSegmentationFunc(basefolder, data, 235, numel(data));
+    runSegmentationFunc(basefolder, data, 1, numel(data));
 end
 
-log_filename = 'logBigBBoxes';
+log_filename = 'logWithBellmanFord0607';
 % run border segmentation and write to log
 segmentBordersFunc(basefolder, data, 1, numel(data), DEBUG_FLAG, log_filename, SUCCESSFUL_ONLY_FLAG);

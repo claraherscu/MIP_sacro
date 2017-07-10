@@ -103,5 +103,5 @@ percentageSuccess = 1 - percentageFails;
 display(percentageSuccess);
 display(totalGrades - failGrades);
 
-display(['overall success rate: ' num2str(1 - sum(failGrades)/(2*(numel(data) - numel(pelvisSegFailures))))]);
-display(['success rate excluding grade 4 patients: ' num2str(1 - sum(failGrades(1:4))/(2*(numel(data) - numel(pelvisSegFailures))))]);
+display(['overall success rate: ' num2str(1 - (sum(failGrades)/(sum(totalGrades) - numel(pelvisSegFailures))))]);
+display(['success rate excluding grade 4 patients: ' num2str(1-(sum(failGrades(1:4))/(sum(totalGrades) - numel(pelvisSegFailures))))]);

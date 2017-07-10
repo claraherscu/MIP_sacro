@@ -4,11 +4,14 @@ function [ seg, score, noise ] = segmentSij( fPath, outfile  )
 % Optional
 %  - boolean outfile: 
 %        Specify if we want to generate a jpg image with the output results
+
 [basefolder, folder] = fileparts(fPath);
 dicomInfo = dicom_folder_info(fPath);
 vol = dicom_read_volume(fPath);
 slices = size(vol,3); display(slices);
 vol = dicom2niftiVol(vol, dicomInfo);
+
+%vol = load_untouch_nii_gzip([fPath '/*.nii.gz']);
 % save([fPath, '/', folder, '.mat'], 'vol');
 bonesSeg = getBones(vol, 0);
 hipsSeg = getHips(bonesSeg, 0, vol); 
@@ -17,12 +20,12 @@ hipsSeg = getHips(bonesSeg, 0, vol);
 hipsSegMatPath = [fPath '/hipsSeg.mat'];
 save(hipsSegMatPath, 'hipsSeg');
 % hipsSegNiiPath = [fPath '/hipsSeg.nii.gz'];
-saveSeg(hipsSeg, int8(zeros(size(hipsSeg))), fPath, 'hipsSeg'); 
+% saveSeg(hipsSeg, int8(zeros(size(hipsSeg))), fPath, 'hipsSeg'); 
 
-fPathForHipsSave = strrep(fPath, '/', '\');
-[segR, cutR, hipsCTRight] = minCutHips(vol, dicomInfo, hipsSeg, 'right', 10, fPathForHipsSave);
-[segL, cutL, hipsCTLeft] = minCutHips(vol, dicomInfo, hipsSeg, 'left', 10, fPathForHipsSave);
-saveSeg(hipsCTLeft, hipsCTRight, fPathForHipsSave, 'pelvis_equalized')
+%fPathForHipsSave = strrep(fPath, '/', '\');
+[segR, cutR, hipsCTRight] = minCutHips(vol, dicomInfo, hipsSeg, 'right', 10);
+[segL, cutL, hipsCTLeft] = minCutHips(vol, dicomInfo, hipsSeg, 'left', 10);
+saveSeg(hipsCTLeft, hipsCTRight, fPath, 'pelvis_equalized');
 
 if exist('outfile','var')
     close all;

@@ -1,4 +1,4 @@
-function [ seg, cutScore, hipsCT ] = minCutHips( vol, info, hipsSeg, side, conn, fPath )
+function [ seg, cutScore, hipsCT ] = minCutHips( vol, info, hipsSeg, side, conn )
 %MINCUTHIPS Summary of this function goes here
 %   Detailed explanation goes here
 

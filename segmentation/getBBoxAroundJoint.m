@@ -43,6 +43,12 @@ function [] = getBBoxAroundJoint (border_seg, pixelSz, side, fd, filename)
     thresh = 1;
     under_thresh = find(distances < thresh);
 
+    while(isempty(under_thresh))
+        thresh = thresh + 1;
+        under_thresh = find(distances < thresh);
+    end
+        
+    
     [~, minIdx] = min(all_points(under_thresh,1));
     [~, maxIdx] = max(all_points(under_thresh,1));
     
@@ -78,6 +84,13 @@ function [] = getBBoxAroundJoint (border_seg, pixelSz, side, fd, filename)
     point2(2) = max(min(point2(2),size(border_seg,2)),1);
     point3(2) = max(min(point3(2),size(border_seg,2)),1);
     point4(2) = max(min(point4(2),size(border_seg,2)),1);
+    
+    % dont know if i need this but flipping Y axis - CHECK THIS
+    point1(2) = size(border_seg,2) - point1(2);
+    point2(2) = size(border_seg,2) - point2(2);
+    point3(2) = size(border_seg,2) - point3(2);
+    point4(2) = size(border_seg,2) - point4(2);
+    
     
     % write polynom slope to file
     fprintf(fd, slope_format, original_slope);
