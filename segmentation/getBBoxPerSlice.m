@@ -49,6 +49,16 @@ function [ ] = getBBoxPerSlice (border_seg, pixelSz, side, filename, hipsSeg, fd
             % we need to generate an artificial window
             [top_x, top_y, curr_slice_poly] = generateArtificialTop(sliceNum, hipsSeg, side);
             ARTIFICIAL_WINDOW = 1;
+            
+            % move the top a bit further
+            v = [-1, polyval(curr_slice_poly, top_x-1)-top_y];
+            u = v / norm(v);
+            if(strcmp(side, 'left'))
+                top = floor([top_x top_y] - (l_size*u)); % bottom = (x0,y0) - d*u -> direction of x0
+            else % side == 'right'
+                top = floor([top_x top_y] + (l_size*u * 2)); % bottom = (x0,y0) + d*u -> direction of x1
+            end
+            top_x = top(1); top_y = top(2);
         else
             [X,Y] = find(curr_slice_border);
             % use polyfit to find orientation
@@ -64,7 +74,7 @@ function [ ] = getBBoxPerSlice (border_seg, pixelSz, side, filename, hipsSeg, fd
             
             % get y of this top point
             top_y = polyval(curr_slice_poly, top_x);
-
+            
             % move the top a bit further
             v = [-1, polyval(curr_slice_poly, top_x-1)-top_y];
             u = v / norm(v);
@@ -75,6 +85,8 @@ function [ ] = getBBoxPerSlice (border_seg, pixelSz, side, filename, hipsSeg, fd
             end
             top_x = top(1); top_y = top(2);
         end
+        
+
         
         
         % get perpendicular slope
@@ -182,7 +194,7 @@ function [top_x, top_y, curr_slice_poly] = generateArtificialTop(sliceNum, hipsS
         slope = 2;
     else
         top_x = xmiddle - 60;
-        slope = 2;
+        slope = -2;
     end
     intercept = top_y - slope*top_x;
     % curr_slice_poly(1) = slope; curr_slice_poly(2) = intercept
