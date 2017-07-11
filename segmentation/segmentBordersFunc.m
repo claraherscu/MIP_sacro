@@ -18,8 +18,6 @@ function [] = segmentBordersFunc(basefolder, data, start_index, end_index, DEBUG
         '4015007511274_2', '4015007511338_2', '4015007511573_2', '4015007512752_2', '4015007512752_3', '4015007513197_2', '4015007513398_2',...
         '4015007515442_2'};
 
-    simmetricBorder = ones(numel(data));
-
     WRITE_TO_FILE = 0;
     
     % writing to log
@@ -27,12 +25,14 @@ function [] = segmentBordersFunc(basefolder, data, start_index, end_index, DEBUG
         txtfilename = [basefolder 'bboxes_per_slice/' log_filename];
         if(exist([txtfilename '.txt'], 'file'))
             % popup box to make sure we want to delete the file TODO: fix, abort does not show
-            choice = questdlg(['deleting log file: ' txtfilename '. are you sure you want to continue?'], 'Deleting log file!', 'Continue', 'Abort');
+            choice = questdlg(['deleting log file: ' txtfilename '. are you sure you want to continue?'], 'Deleting log file!', 'Continue', 'Cancel Writing', 'Cancel Writing');
             % handle response
             switch choice
                 case 'Continue'
                     WRITE_TO_FILE = 1;
                     f = fopen([txtfilename '.txt'], 'wt');
+                case 'Cancel Writing'
+                    WRITE_TO_FILE = 0;
             end
         else
             WRITE_TO_FILE = 1;
@@ -58,17 +58,14 @@ function [] = segmentBordersFunc(basefolder, data, start_index, end_index, DEBUG
         if(isBorderFailure)
             SUCCESSFUL_LEFT = 0;
             SUCCESSFUL_RIGHT = 0;
-            continue;
         end
         isLeftBorderFailure = find(strcmp(borderSegFailLt, d.accessNum));
         if(isLeftBorderFailure)
             SUCCESSFUL_LEFT = 0;
-            continue;
         end
         isRightBorderFailure = find(strcmp(borderSegFailRt, d.accessNum));
         if(isRightBorderFailure)
             SUCCESSFUL_RIGHT = 0;
-            continue;
         end
         
         % if needed, writing to log
@@ -153,9 +150,13 @@ function [] = segmentBordersFunc(basefolder, data, start_index, end_index, DEBUG
 
                 % get Bboxes & write to log file
                 if (WRITE_TO_FILE)
-                    getBBoxPerSlice (segBorder.L, pixelSz, 'left', f, d.accessNum);
-                    getBBoxPerSlice (segBorder.R, pixelSz, 'right', f, d.accessNum);
+                    getBBoxPerSlice (segBorder.L, pixelSz, 'left', d.accessNum, hipsSeg, f);
+                    getBBoxPerSlice (segBorder.R, pixelSz, 'right', d.accessNum, hipsSeg, f);
+                else
+                    getBBoxPerSlice (segBorder.L, pixelSz, 'left', d.accessNum, hipsSeg);
+                    getBBoxPerSlice (segBorder.R, pixelSz, 'right', d.accessNum, hipsSeg);
                 end
+                
 
 %                 % get big Bboxes & write to log file
 %                 if (WRITE_TO_FILE)

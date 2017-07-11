@@ -11,6 +11,6 @@ if(SEGMENTATION_FLAG)
     runSegmentationFunc(basefolder, data, 1, numel(data));
 end
 
-log_filename = 'logWithBellmanFord0607';
+log_filename = 'logWithArtificialWindows';
 % run border segmentation and write to log
 segmentBordersFunc(basefolder, data, 1, numel(data), DEBUG_FLAG, log_filename, SUCCESSFUL_ONLY_FLAG);
